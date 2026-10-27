@@ -49,14 +49,19 @@ onceroot is a third answer.
 
 ![Omarchy's authentication dialog with the card above the password field: the program, every argument, the folder, the process chain, the risk and the agent's reason](docs/dialog.png)
 
-An agent asked to install hyperfine. Omarchy's dialog opened at once, with the
-card above the password field. Screenshot from Omarchy 4.0.6 in a virtual
+Claude Code, following onceroot's skill, asked to install tokei. Omarchy's
+dialog opened at once, with the card above the password field; the chain shows
+the request came from `claude`. Screenshot from Omarchy 4.0.6 in a virtual
 machine.
 
 <details>
-<summary>The agent's terminal, the bar and the review window</summary>
+<summary>The agent's answer, the terminal, the bar and the review window</summary>
 
-The agent's terminal gets the full card, one argument per line, then the
+After the approval, the agent reported what ran:
+
+![Claude Code's answer: tokei is installed through onceroot, a person approved it on the card, and it ran pacman -S --noconfirm tokei](docs/agent-answer.png)
+
+The terminal of a request gets the full card, one argument per line, then the
 command's own output once you approve:
 
 ![The agent's terminal: the full card, "approve (approved by polkit)", then pacman installing hyperfine](docs/agent-terminal.png)
@@ -194,7 +199,8 @@ How each part works, and why: [docs/how-it-works.md](docs/how-it-works.md).
 
 The package was built with `makepkg`, installed with `pacman` and run on
 Omarchy 4.0.6 in a virtual machine: approve and reject in the dialog, the bar,
-the review window, a request over ssh, the MCP server. Each figure, the command
+the review window, a request over ssh, and Claude Code asking for root on its
+own, through the skill and through the MCP server. Each figure, the command
 behind it and what has not been run yet: [docs/measured.md](docs/measured.md).
 
 ## How it is built and checked

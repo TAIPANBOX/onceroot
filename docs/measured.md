@@ -183,6 +183,20 @@ Fixed in this pass:
 - GitHub's source tarball of the tag held exactly the files of the tag, and two
   downloads gave the same SHA-256, now the checksum in the PKGBUILD.
 
+## 2026-10-27, a real agent
+
+Claude Code 2.1.311 on Claude Haiku 5.5, in a terminal of the same Omarchy VM,
+with onceroot's skill copied next to Omarchy's own and the MCP server added
+with `claude mcp add --scope user onceroot -- onceroot mcp` (`claude mcp
+list`: Connected).
+
+| Task given to the agent | What it did | Result |
+|---|---|---|
+| "install the Arch package tokei, you do not have sudo", allowed to run `onceroot run` | `onceroot run --why "install the tokei package the line-count report needs" -- pacman -S --noconfirm tokei`; the card showed the chain onceroot <- bash <- claude | approved in the dialog, ran once, `tokei 15.0.0-1`; the agent reported that a person approved it |
+| "install the Arch package git-delta", allowed only the MCP tool | `run_as_root` with `pacman -S --noconfirm git-delta`; the chain onceroot <- claude | approved in the dialog, ran once, `git-delta 0.20.1-1`; the agent reported the exit code 0 |
+
+No other card was made in either run, and the journal verified (30 entries).
+
 ## Not run yet
 
 - polkit dialogs other than Omarchy's (GNOME, KDE, lxqt): with desk_prompt=auto
@@ -194,5 +208,5 @@ Fixed in this pass:
   already run against Telegram in other projects: the client in rollcall, the
   PIN, code and lockout in openwrt-mcp (approvals from Telegram in
   hermes-openwrt); the flow is tested against a stand-in server.
-- Any agent (Claude Code, Codex) using the skill or the MCP tool for real; the
-  MCP server was driven by a scripted client.
+- Agents other than Claude Code (Codex and others) using the skill or the MCP
+  server.

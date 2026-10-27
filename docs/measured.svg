@@ -57,6 +57,6 @@
 <rect x="846" y="262" width="6" height="122" rx="3" ry="3" fill="#d29922"/>
 <text x="872" y="312" font-size="30" font-weight="700" fill="#d29922" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">Omarchy 4.0.6</text>
 <text x="872" y="342" font-size="17" font-weight="600" fill="#e6edf3" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">in a VM</text>
-<text x="872" y="366" font-size="14" fill="#9aa7b8" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">dialog, bar, review, MCP, package</text>
+<text x="872" y="366" font-size="14" fill="#9aa7b8" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">Claude Code asking, dialog, bar, review</text>
 <text x="1252" y="412" font-size="12" fill="#69788b" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="end">github.com/TAIPANBOX/onceroot</text>
 </svg>

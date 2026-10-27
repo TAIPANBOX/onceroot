@@ -38,11 +38,14 @@ cp /usr/share/onceroot/skill/onceroot/SKILL.md ~/.claude/skills/onceroot/
 ## The MCP server
 
 `onceroot mcp` is an MCP server over stdio with one tool, `run_as_root`. In
-Claude Code:
+Claude Code, for every project:
 
 ```sh
-claude mcp add onceroot -- onceroot mcp
+claude mcp add --scope user onceroot -- onceroot mcp
+claude mcp list        # onceroot: onceroot mcp - Connected
 ```
+
+Without `--scope user`, Claude Code registers it for the current folder only.
 
 Other agents take a stdio server whose command is `onceroot mcp`.
 
