@@ -4,8 +4,11 @@ Optional, and off by default. When it is on, each card also goes to one private
 Telegram chat, so a request can be approved away from the desk. The dialog at
 the desk still opens; whichever answer comes first decides.
 
-**Already proven in use.** The parts that talk to Telegram and check the
-factors come from our other projects, where they run against Telegram itself:
+**Run against Telegram itself** on 2026-10-27: a card sent to a private chat,
+Approve, then the PIN and a code from the phone's authenticator, and the
+command ran once ([measured.md](measured.md#2026-10-27-approval-from-a-phone)).
+The parts that talk to Telegram and check the factors also run in our other
+projects:
 
 - the Telegram client is [rollcall](https://github.com/TAIPANBOX/rollcall)'s,
   which binds a chat with a code sent from a phone and delivers its messages on
@@ -16,9 +19,9 @@ factors come from our other projects, where they run against Telegram itself:
   [hermes-openwrt](https://github.com/TAIPANBOX/hermes-openwrt), measured on a
   Flint 2 router.
 
-onceroot's own flow around them (the Approve and Reject buttons, deleting the
-PIN message first, the one private chat) is covered by tests against a
-stand-in Telegram server ([measured.md](measured.md)).
+The rest of the flow (the buttons, deleting the PIN message first, answering
+one private chat only, a phone that cannot be reached) is also covered by tests
+against a stand-in Telegram server.
 
 ## What it takes
 

@@ -167,13 +167,13 @@ private Telegram chat. Reject takes one tap. Approve asks for your PIN and a
 code from an authenticator app, and the message carrying them is deleted first.
 Telegram's servers see the card.
 
-It is built from parts that already work against Telegram itself in our other
-projects: the Telegram client of [rollcall](https://github.com/TAIPANBOX/rollcall),
-and the PIN, code and lockout checks of
-[openwrt-mcp](https://github.com/TAIPANBOX/openwrt-mcp), which approve router
-changes from Telegram in [hermes-openwrt](https://github.com/TAIPANBOX/hermes-openwrt).
-The flow around them is tested against a stand-in Telegram server. Setup:
-[docs/phone.md](docs/phone.md).
+Run end to end against Telegram itself on 2026-10-27: the card reached the
+phone, Approve, then the PIN and an authenticator code, and the command ran
+once. Its Telegram client comes from [rollcall](https://github.com/TAIPANBOX/rollcall)
+and its PIN, code and lockout checks from
+[openwrt-mcp](https://github.com/TAIPANBOX/openwrt-mcp), which already approve
+router changes from Telegram in [hermes-openwrt](https://github.com/TAIPANBOX/hermes-openwrt).
+Setup: [docs/phone.md](docs/phone.md).
 
 ## What onceroot does not do
 

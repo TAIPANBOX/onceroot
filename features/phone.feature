@@ -58,3 +58,8 @@ Feature: Approval from the phone, when the owner turns it on
   @test:TestNewBotWithoutAClientIsGuarded
   Scenario: the default client of the bot talks to Telegram only
     Then a bot made without an explicit client refuses to connect to another host
+
+  @test:TestPhoneFailureIsJournalledAndTold
+  Scenario: a card that cannot reach the phone is said so
+    Given Telegram cannot be reached when a card is held
+    Then the journal records it, the agent is told to approve at the desk or from onceroot review, and approving there runs it

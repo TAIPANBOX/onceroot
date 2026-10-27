@@ -69,6 +69,7 @@ MUTANTS = [
     ("daemon: reject answers before the journal", "internal/daemon/daemon.go", "\tif err := awaitLogged(logged, rec.Card.Expires); err != nil {\n\t\tev.send(wire.Event{Ev: \"error\", Reason: \"rejected, but", "\tif err := awaitLogged(logged, rec.Card.Expires); err != nil && false {\n\t\tev.send(wire.Event{Ev: \"error\", Reason: \"rejected, but", "./internal/daemon/"),
     ("daemon: no dialog not journalled", "internal/daemon/daemon.go", "\t\t\t\tdm.journal(\"no_dialog\", id, cd.Hash, nil)\n", "", "./internal/daemon/"),
     ("mcp: a cancelled id stays taken", "internal/mcp/mcp.go", "\t\t\tdelete(cancelled, key) // the id is free again for a later call\n", "", "./internal/mcp/"),
+    ("daemon: a phone failure is swallowed", "internal/daemon/daemon.go", "\t\t\tdm.journal(\"phone_failed\", id, cd.Hash, map[string]string{\"reason\": err.Error()})\n", "", "./internal/daemon/"),
     ("bar: idle prints its JSON", "cmd/onceroot/bar.go", "\tif len(held) == 0 {\n\t\treturn \"\"\n\t}", "", "./cmd/onceroot/"),
     ("daemon: list shows every uid", "internal/daemon/daemon.go", "\t\tif rec.Card.Req.UID != uid {\n\t\t\tcontinue", "\t\tif false {\n\t\t\tcontinue", "./internal/daemon/"),
     ("daemon: reject ignores the uid", "internal/daemon/daemon.go", "\tif !ok || rec.Card.Req.UID != r.UID {", "\tif !ok {", "./internal/daemon/"),

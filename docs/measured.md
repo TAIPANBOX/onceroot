@@ -197,16 +197,27 @@ list`: Connected).
 
 No other card was made in either run, and the journal verified (30 entries).
 
+## 2026-10-27, approval from a phone
+
+The same VM with `phone = telegram`, a test bot and one private chat; the PIN
+and the authenticator secret were made for the test with `oncerootd setup-phone`
+and removed afterwards, with the bot token.
+
+- A request from an ssh session (no dialog to open there) went to the phone.
+  The card arrived in the chat with Approve and Reject; Approve asked for the
+  PIN and the code; the reply carried them; the agent got "approve (approved by
+  phone)" and the command ran once (a file created by root, 18:45).
+- The PIN was not in the journal (`grep` found it 0 times); the journal
+  verified (34 entries).
+- The test showed a defect: a card that cannot reach the phone was dropped
+  silently. It is now journalled as `phone_failed`, and the agent is
+  told to approve at the desk or from the review
+  (TestPhoneFailureIsJournalledAndTold, red first).
+
 ## Not run yet
 
 - polkit dialogs other than Omarchy's (GNOME, KDE, lxqt): with desk_prompt=auto
   they are not used; approval goes through `onceroot review`.
 - A fingerprint or FIDO2 approval (the VM has neither).
-- `makepkg` against the published release tarball: the PKGBUILD's checksum
-  stays `SKIP` until the tag exists, and must be set then.
-- onceroot's own Telegram flow end to end against Telegram itself. Its parts
-  already run against Telegram in other projects: the client in rollcall, the
-  PIN, code and lockout in openwrt-mcp (approvals from Telegram in
-  hermes-openwrt); the flow is tested against a stand-in server.
 - Agents other than Claude Code (Codex and others) using the skill or the MCP
   server.

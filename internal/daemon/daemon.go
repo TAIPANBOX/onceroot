@@ -299,6 +299,11 @@ func (dm *Daemon) run(c *net.UnixConn, ev *events, r card.Requester, req wire.Re
 				case <-ctx.Done():
 				}
 			}()
+		} else {
+			// Said, not swallowed: the person must not wait for a phone that
+			// never got the card. The phone's errors never hold its token (I12).
+			dm.journal("phone_failed", id, cd.Hash, map[string]string{"reason": err.Error()})
+			ev.send(wire.Event{Ev: "note", ID: id, Reason: "the phone could not be reached (" + err.Error() + "): approve at the desk or from onceroot review"})
 		}
 		defer dm.d.Phone.Withdraw(id)
 	}

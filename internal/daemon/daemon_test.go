@@ -96,11 +96,15 @@ type fakePhone struct {
 	mu      sync.Mutex
 	offered map[string]chan Decision
 	got     chan string
+	fail    error // what Offer returns, as when Telegram cannot be reached
 }
 
 func (p *fakePhone) Offer(ctx context.Context, rec card.Record, text string) (<-chan Decision, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
+	if p.fail != nil {
+		return nil, p.fail
+	}
 	ch := make(chan Decision, 1)
 	p.offered[rec.Card.ID] = ch
 	p.got <- rec.Card.ID
@@ -580,6 +584,30 @@ func TestApproveWithoutAnAgentKeepsTheCard(t *testing.T) {
 	}
 	if r, _ := h.store.Get(id); r.Status != card.Held {
 		t.Fatalf("card %v, want it still held", r.Status)
+	}
+}
+
+// A card that could not reach the phone is said so, in the journal and to
+// the agent, instead of waiting there in silence (VM run of 2026-10-27).
+func TestPhoneFailureIsJournalledAndTold(t *testing.T) {
+	phone := &fakePhone{offered: map[string]chan Decision{}, got: make(chan string, 4), fail: errors.New("telegram: unreachable")}
+	h := start(t, "", phone, time.Minute)
+	h.d.cfg.DeskDialog = false
+	type result struct {
+		out string
+		err error
+	}
+	done := make(chan result, 1)
+	go func() { _, out, err := h.run("pacman", "-S", "x"); done <- result{out, err} }()
+	id := heldID(t, h)
+	waitFor(t, "the phone failure in the journal", func() bool { return slices.Contains(h.journal.list(), "phone_failed") })
+	h.peers <- approver()
+	if _, err := client.Do(h.sock, wire.Request{Op: "approve", ID: id}); err != nil {
+		t.Fatal(err)
+	}
+	r := <-done
+	if r.err != nil || !strings.Contains(r.out, "phone could not be reached") {
+		t.Fatalf("the agent was not told the phone failed: %v %q", r.err, r.out)
 	}
 }
 
