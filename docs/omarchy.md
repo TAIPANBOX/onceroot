@@ -18,7 +18,7 @@ and does not grow with the text. So the card it gets is laid out for it:
   for shorter arguments: no dialog can approve a command it does not show;
 - empty lines under the card keep it above the password field;
 - characters that could hide or fake an argument (full-width quotes, invisible
-  or very wide characters, combining marks) are shown escaped, as `＂`.
+  or very wide characters, combining marks) are shown escaped, as `\uff02`.
 
 On other desktops `auto` does not open the dialog on its own; you approve from
 `onceroot review`, which prints the whole card first.

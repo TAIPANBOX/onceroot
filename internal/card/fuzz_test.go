@@ -10,7 +10,7 @@ import (
 
 func FuzzRender(f *testing.F) {
 	f.Add("a b", "two\nlines", "why\x00", "claude")
-	f.Add("‮", "⁦x⁩", "", "\x1b[2J")
+	f.Add("\u202E", "\u2066x\u2069", "", "\x1b[2J")
 	f.Fuzz(func(t *testing.T, a1, a2, why, comm string) {
 		c := sample()
 		c.Argv = []string{"cmd", a1, a2}
