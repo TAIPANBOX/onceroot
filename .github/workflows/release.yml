@@ -1,0 +1,96 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions: {}
+
+jobs:
+  package:
+    name: the Arch package, the binaries and their checksums
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    permissions:
+      contents: read
+    steps:
+      - name: Install the build tools
+        run: pacman -Syu --noconfirm --needed git go namcap polkit  # polkit: a runtime dependency makepkg checks
+
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: The tag names the PKGBUILD's version, and its notes exist
+        run: |
+          ver=$(sed -n 's/^pkgver=//p' packaging/PKGBUILD)
+          test "$GITHUB_REF_NAME" = "v$ver" || { echo "tag $GITHUB_REF_NAME, PKGBUILD $ver"; exit 1; }
+          test -s "docs/releases/$GITHUB_REF_NAME.md" || { echo "no docs/releases/$GITHUB_REF_NAME.md"; exit 1; }
+
+      - name: Build the package as a normal user, the tests and the binary checks included
+        run: |
+          useradd --create-home builder
+          chown -R builder "$GITHUB_WORKSPACE"
+          su builder -c "git config --global --add safe.directory '$GITHUB_WORKSPACE' && cd '$GITHUB_WORKSPACE' && scripts/package.sh"
+
+      - name: Lint the package
+        run: namcap onceroot-*.pkg.tar.zst
+
+      - name: Build the binaries the package holds, and measure them
+        run: |
+          ver=$(sed -n 's/^pkgver=//p' packaging/PKGBUILD)
+          mkdir -p release
+          for c in onceroot oncerootd; do
+            CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOFLAGS='-buildmode=pie -trimpath -mod=readonly' \
+              go build -ldflags '-bindnow' -o "release/$c-$ver-linux-x86_64" "./cmd/$c"
+          done
+          ONCEROOT_CHECK_BIN="$PWD/release/onceroot-$ver-linux-x86_64:$PWD/release/oncerootd-$ver-linux-x86_64" \
+            go test -count=1 -run '^TestBuiltBinariesAreHardened$' -v ./internal/gates/
+          cp "onceroot-$ver-1-x86_64.pkg.tar.zst" release/
+          (cd release && sha256sum -- * > SHA256SUMS && cat SHA256SUMS)
+
+      - name: Keep the release set
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-set
+          path: release/
+          if-no-files-found: error
+
+  publish:
+    name: attest every file and publish
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - name: Check out the release notes
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Fetch the release set
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: release-set
+          path: release
+
+      - name: The checksums match the files
+        run: (cd release && sha256sum -c SHA256SUMS)
+
+      # One attestation over every file in release/, SHA256SUMS included, so the
+      # checksum file is covered by the same signed statement.
+      - name: Attest every file
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: 'release/*'
+
+      - name: Publish the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: gh release create "$TAG" --verify-tag --title "onceroot $TAG" --notes-file "docs/releases/$TAG.md" release/*

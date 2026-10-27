@@ -17,9 +17,10 @@ once. Built for [Omarchy](https://omarchy.org) first.
 
 ![An agent asks oncerootd for one command; oncerootd checks it and shows you a card; you approve in your desktop's dialog; the command runs once and every step goes into a signed journal](docs/hero.svg)
 
-**Version 0.1.0, not released yet.** Build the package from this repository
-([Install](#install)). Every figure under [Measured](#measured) was taken on
-2026-10-27.
+**Version 0.1.0**, released on 2026-10-27:
+[the package and its checksums](https://github.com/TAIPANBOX/onceroot/releases/tag/v0.1.0),
+each with a build provenance attestation. Every figure under
+[Measured](#measured) was taken that day.
 
 ## Why
 
@@ -80,7 +81,9 @@ You need Arch Linux or Omarchy with systemd and polkit, plus `git`, `go` and
 `base-devel` to build. Details and a way without the package:
 [docs/install.md](docs/install.md).
 
-**1. Build and install the package.** The build runs the whole test suite.
+**1. Build and install the package.** The build runs the whole test suite. Or
+take the package from the [release](https://github.com/TAIPANBOX/onceroot/releases/tag/v0.1.0)
+and install it with `sudo pacman -U`.
 
 ```sh
 git clone https://github.com/TAIPANBOX/onceroot && cd onceroot
