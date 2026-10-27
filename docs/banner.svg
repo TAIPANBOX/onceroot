@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="340" viewBox="0 0 1280 340" role="img" aria-label="onceroot: root for an AI agent, one approved command at a time">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0a0e16"/>
+    <stop offset="1" stop-color="#0d1117"/>
+  </linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#2dd4bf"/>
+    <stop offset="1" stop-color="#4493f8"/>
+  </linearGradient>
+  <linearGradient id="wordmark" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#e6edf3"/>
+    <stop offset="1" stop-color="#2dd4bf"/>
+  </linearGradient>
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#161b22" stroke-width="1"/>
+  </pattern>
+  <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.45"/>
+  </filter>
+  <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+    <feGaussianBlur stdDeviation="8" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect x="0" y="0" width="1280" height="340" fill="url(#bg)"/>
+<rect x="0" y="0" width="1280" height="340" fill="url(#grid)" opacity="0.5"/>
+<rect x="0" y="0" width="1280" height="4" fill="url(#accent)"/>
+<text x="72" y="136" font-size="66" font-weight="700" fill="url(#wordmark)" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start" letter-spacing="-1.5">onceroot</text>
+<text x="74" y="178" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" font-size="19" fill="#e6edf3">Root for an AI agent, <tspan font-weight="600" fill="#2dd4bf">one approved command at a time</tspan>.</text>
+<text x="74" y="206" font-size="15" fill="#69788b" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">The agent asks, you see exactly what will run, and it runs once.</text>
+<rect x="72" y="240" width="242" height="62" rx="10" fill="#141a23" stroke="#1b2331"/>
+<text x="90" y="266" font-size="11" fill="#69788b" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start" letter-spacing="0.6">APPROVED IN</text>
+<text x="90" y="288" font-size="16" font-weight="600" fill="#e6edf3" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">your desktop's own dialog</text>
+<rect x="334" y="240" width="242" height="62" rx="10" fill="#141a23" stroke="#1b2331"/>
+<text x="352" y="266" font-size="11" fill="#69788b" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start" letter-spacing="0.6">RUNS</text>
+<text x="352" y="288" font-size="16" font-weight="600" fill="#e6edf3" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">one command, once</text>
+<rect x="596" y="240" width="242" height="62" rx="10" fill="#141a23" stroke="#1b2331"/>
+<text x="614" y="266" font-size="11" fill="#69788b" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start" letter-spacing="0.6">RECORDS</text>
+<text x="614" y="288" font-size="16" font-weight="600" fill="#e6edf3" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">a signed journal</text>
+<g transform="translate(1045,170)">
+  <rect x="-108" y="-92" width="176" height="128" rx="10" fill="#1b2331" stroke="#283341" opacity="0.9"/>
+  <rect x="-90" y="-70" width="120" height="8" rx="4" fill="#283341"/>
+  <rect x="-90" y="-48" width="92" height="8" rx="4" fill="#283341"/>
+  <rect x="-90" y="-26" width="136" height="8" rx="4" fill="#283341"/>
+  <rect x="-90" y="-4" width="74" height="8" rx="4" fill="#283341"/>
+  <path d="M 28 6 v -26 a 34 34 0 0 1 68 0 v 26" fill="none" stroke="#2dd4bf" stroke-width="10" stroke-linecap="round" filter="url(#glow)"/>
+  <rect x="10" y="4" width="104" height="82" rx="12" fill="#141a23" stroke="#2dd4bf" stroke-width="2.5" filter="url(#glow)"/>
+  <circle cx="62" cy="38" r="9" fill="#2dd4bf"/>
+  <rect x="58" y="42" width="8" height="22" rx="3" fill="#2dd4bf"/>
+</g>
+<text x="1252" y="326" font-size="12" fill="#69788b" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="end">github.com/TAIPANBOX/onceroot</text>
+</svg>

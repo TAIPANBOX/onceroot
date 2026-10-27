@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security problem privately
+    url: https://github.com/TAIPANBOX/onceroot/security/advisories/new
+    about: Anything that runs a command as root without your approval of exactly that command, or shows less than what runs.

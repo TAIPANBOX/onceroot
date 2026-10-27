@@ -6,3 +6,4 @@
 coverage.*
 .DS_Store
 __pycache__/
+/onceroot-*.pkg.tar.zst

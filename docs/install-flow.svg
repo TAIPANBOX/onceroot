@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="280" viewBox="0 0 1280 280" role="img" aria-label="Install: build the package, allow your user, start the service, tell your agent">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0a0e16"/>
+    <stop offset="1" stop-color="#0d1117"/>
+  </linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#2dd4bf"/>
+    <stop offset="1" stop-color="#4493f8"/>
+  </linearGradient>
+  <linearGradient id="wordmark" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#e6edf3"/>
+    <stop offset="1" stop-color="#2dd4bf"/>
+  </linearGradient>
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#161b22" stroke-width="1"/>
+  </pattern>
+  <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.45"/>
+  </filter>
+  <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+    <feGaussianBlur stdDeviation="8" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect x="0" y="0" width="1280" height="280" fill="url(#bg)"/>
+<rect x="0" y="0" width="1280" height="280" fill="url(#grid)" opacity="0.5"/>
+<rect x="0" y="0" width="1280" height="4" fill="url(#accent)"/>
+<rect x="60" y="48" width="260" height="190" rx="8" ry="8" fill="#1b2331" stroke="#283341" stroke-width="1" filter="url(#soft)"/>
+<rect x="60" y="48" width="6" height="190" rx="3" ry="3" fill="#4493f8"/>
+<circle cx="102" cy="86" r="17" fill="#141a23" stroke="#4493f8" stroke-width="1.5"/>
+<text x="102" y="92" font-size="17" font-weight="700" fill="#4493f8" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="middle">1</text>
+<text x="132" y="92" font-size="18" font-weight="700" fill="#e6edf3" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">Build the package</text>
+<line x1="86" y1="116" x2="294" y2="116" stroke="#222b38" stroke-width="1"/>
+<text x="86" y="150" font-size="15" fill="#9aa7b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="start">scripts/package.sh</text>
+<text x="86" y="176" font-size="15" fill="#9aa7b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="start">pacman -U onceroot-*</text>
+<line x1="320" y1="143" x2="360" y2="143" stroke="#283341" stroke-width="2"/>
+<path d="M 360 143 l -11 -6 l 0 12 z" fill="#4493f8"/>
+<circle cx="320" cy="143" r="4" fill="#4493f8">
+  <animate attributeName="cx" values="320;360" dur="3s" repeatCount="indefinite"/>
+  <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.12;0.88;1" dur="3s" repeatCount="indefinite"/>
+</circle>
+<rect x="360" y="48" width="260" height="190" rx="8" ry="8" fill="#1b2331" stroke="#283341" stroke-width="1" filter="url(#soft)"/>
+<rect x="360" y="48" width="6" height="190" rx="3" ry="3" fill="#2dd4bf"/>
+<circle cx="402" cy="86" r="17" fill="#141a23" stroke="#2dd4bf" stroke-width="1.5"/>
+<text x="402" y="92" font-size="17" font-weight="700" fill="#2dd4bf" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="middle">2</text>
+<text x="432" y="92" font-size="18" font-weight="700" fill="#e6edf3" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">Allow your user</text>
+<line x1="386" y1="116" x2="594" y2="116" stroke="#222b38" stroke-width="1"/>
+<text x="386" y="150" font-size="15" fill="#9aa7b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="start">allowed_uids: your uid</text>
+<text x="386" y="176" font-size="15" fill="#9aa7b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="start">usermod -aG onceroot</text>
+<line x1="620" y1="143" x2="660" y2="143" stroke="#283341" stroke-width="2"/>
+<path d="M 660 143 l -11 -6 l 0 12 z" fill="#2dd4bf"/>
+<circle cx="620" cy="143" r="4" fill="#2dd4bf">
+  <animate attributeName="cx" values="620;660" dur="3s" repeatCount="indefinite"/>
+  <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.12;0.88;1" dur="3s" repeatCount="indefinite"/>
+</circle>
+<rect x="660" y="48" width="260" height="190" rx="8" ry="8" fill="#1b2331" stroke="#283341" stroke-width="1" filter="url(#soft)"/>
+<rect x="660" y="48" width="6" height="190" rx="3" ry="3" fill="#2dd4bf"/>
+<circle cx="702" cy="86" r="17" fill="#141a23" stroke="#2dd4bf" stroke-width="1.5"/>
+<text x="702" y="92" font-size="17" font-weight="700" fill="#2dd4bf" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="middle">3</text>
+<text x="732" y="92" font-size="18" font-weight="700" fill="#e6edf3" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">Start the service</text>
+<line x1="686" y1="116" x2="894" y2="116" stroke="#222b38" stroke-width="1"/>
+<text x="686" y="150" font-size="15" fill="#9aa7b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="start">systemctl enable</text>
+<text x="686" y="176" font-size="15" fill="#9aa7b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="start">  --now oncerootd</text>
+<line x1="920" y1="143" x2="960" y2="143" stroke="#283341" stroke-width="2"/>
+<path d="M 960 143 l -11 -6 l 0 12 z" fill="#2dd4bf"/>
+<circle cx="920" cy="143" r="4" fill="#2dd4bf">
+  <animate attributeName="cx" values="920;960" dur="3s" repeatCount="indefinite"/>
+  <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.12;0.88;1" dur="3s" repeatCount="indefinite"/>
+</circle>
+<rect x="960" y="48" width="260" height="190" rx="8" ry="8" fill="#1b2331" stroke="#283341" stroke-width="1" filter="url(#soft)"/>
+<rect x="960" y="48" width="6" height="190" rx="3" ry="3" fill="#3fb950"/>
+<circle cx="1002" cy="86" r="17" fill="#141a23" stroke="#3fb950" stroke-width="1.5"/>
+<text x="1002" y="92" font-size="17" font-weight="700" fill="#3fb950" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="middle">4</text>
+<text x="1032" y="92" font-size="18" font-weight="700" fill="#e6edf3" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">Tell your agent</text>
+<line x1="986" y1="116" x2="1194" y2="116" stroke="#222b38" stroke-width="1"/>
+<text x="986" y="150" font-size="15" fill="#9aa7b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="start">SKILL.md, or</text>
+<text x="986" y="176" font-size="15" fill="#9aa7b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="start">onceroot mcp</text>
+</svg>

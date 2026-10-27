@@ -1,0 +1,59 @@
+name: Test report
+description: What happened when you ran onceroot on your machine, working or not.
+title: "Test report: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for testing. A report that something worked is as useful as one that it
+        did not, especially for a desktop or polkit agent other than Omarchy's.
+
+        **Before you paste anything, look for bot tokens, PINs and authenticator secrets,
+        and take them out.** A security problem goes through
+        [SECURITY.md](https://github.com/TAIPANBOX/onceroot/blob/main/SECURITY.md),
+        not an issue.
+  - type: input
+    id: system
+    attributes:
+      label: Distribution and desktop
+      description: "For example Omarchy 4.0.6, or Arch Linux with GNOME 49."
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: onceroot version
+      description: "`pacman -Q onceroot`, or the commit you built."
+    validations:
+      required: true
+  - type: dropdown
+    id: approval
+    attributes:
+      label: How you approved
+      options:
+        - the dialog that opened by itself
+        - onceroot review
+        - the bar module
+        - the phone
+        - it did not get that far
+    validations:
+      required: true
+  - type: input
+    id: agent
+    attributes:
+      label: Agent
+      description: "Which agent asked, and through the CLI or the MCP server."
+  - type: textarea
+    id: what
+    attributes:
+      label: What you did and what happened
+      description: "The command, the card it showed, and the output. `onceroot status` helps."
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: journal
+    attributes:
+      label: Journal check
+      description: "`onceroot journal verify` (as a member of the onceroot group)."
+      render: text

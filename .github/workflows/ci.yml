@@ -70,3 +70,27 @@ jobs:
 
       - name: Vulnerability check
         run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
+
+  package:
+    name: the package builds and passes its checks in Arch Linux
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    permissions:
+      contents: read
+    steps:
+      - name: Install the build tools
+        run: pacman -Syu --noconfirm --needed git go namcap
+
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build the package as a normal user, the way README says
+        run: |
+          useradd --create-home builder
+          chown -R builder "$GITHUB_WORKSPACE"
+          su builder -c "git config --global --add safe.directory '$GITHUB_WORKSPACE' && cd '$GITHUB_WORKSPACE' && scripts/package.sh"
+
+      - name: Lint the package
+        run: namcap onceroot-*.pkg.tar.zst

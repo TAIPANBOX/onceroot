@@ -1,125 +1,171 @@
+<div align="center">
+
+![onceroot: root for an AI agent, one approved command at a time](docs/banner.svg)
+
 # onceroot
 
-Root for an AI agent, one approved command at a time.
+Root for an AI coding agent, one command at a time. The agent asks for an exact
+command, you see it in your desktop's own authentication dialog, and it runs
+once. Built for [Omarchy](https://omarchy.org) first.
 
-Coding agents now work unattended on developer desktops. When one of them
-needs root, a desktop usually offers two answers: a password prompt the agent
-cannot answer, so it stalls, or passwordless sudo, which gives root to every
-process of your user for minutes or for good. Five minutes of passwordless
-sudo is root for good, because in those minutes any process can write its own
-rule into `/etc/sudoers.d`.
+[![ci](https://github.com/TAIPANBOX/onceroot/actions/workflows/ci.yml/badge.svg)](https://github.com/TAIPANBOX/onceroot/actions/workflows/ci.yml)
+![Omarchy 4.0](https://img.shields.io/badge/Omarchy-4.0-2dd4bf)
+![Go 1.27, standard library only](https://img.shields.io/badge/Go%201.27-stdlib%20only-4493f8)
+![license MIT](https://img.shields.io/badge/license-MIT-9aa7b8)
 
-onceroot is a third answer. The agent asks for one exact command. You see that
-command and approve it. It runs once.
+</div>
 
-Not released yet. Built for [Omarchy](https://omarchy.org) first; any Linux
-with systemd and polkit is the next step.
+![An agent asks oncerootd for one command; oncerootd checks it and shows you a card; you approve in your desktop's dialog; the command runs once and every step goes into a signed journal](docs/hero.svg)
+
+**Version 0.1.0, not released yet.** Build the package from this repository
+([Install](#install)). Every figure under [Measured](#measured) was taken on
+2026-10-27.
+
+## Why
+
+Coding agents now work for long stretches on their own. When one needs root, a
+desktop has two answers. A password prompt the agent cannot answer, so it
+stalls. Or passwordless sudo for every process of your user, which is root for
+good: within those minutes any process can write its own rule into
+`/etc/sudoers.d`.
+
+onceroot is a third answer.
+
+## What it does
+
+- **Root for one command, not for a while.** The agent runs
+  `onceroot run -- pacman -S hyperfine` instead of `sudo`. That one command runs
+  once, after you approve it.
+- **You see what will run.** The card holds the program as root resolves it,
+  every argument quoted, the folder, the chain of processes that asked and a
+  risk label. The agent's own words are one quoted line at the end.
+- **You approve where you already approve things.** Omarchy's own polkit
+  dialog: fingerprint, security key or password. Escape rejects.
+- **Everything is written down.** Every request, decision and run goes into a
+  signed, hash-chained journal that `onceroot journal verify` checks.
 
 ## What you see
 
-When an agent asks, onceroot shows a card in the agent's terminal, and the
-same facts in fewer lines in your desktop's authentication dialog:
+![Omarchy's authentication dialog with the card above the password field: the program, every argument, the folder, the process chain, the risk and the agent's reason](docs/dialog.png)
 
-```
-ROOT REQUEST KKSQU (until 14:07)
-Run: "/usr/bin/touch"
-  "touch"
-  "/etc/onceroot-e2e-marker"
-In: "/home/tester"
-Asked by: "onceroot" (pid 3405) <- "bash" <- "foot" <- "Hyprland"
-Risk: writes system files
-The agent says: "e2e-test"
-```
+An agent asked to install hyperfine. Omarchy's dialog opened at once, with the
+card above the password field. Screenshot from Omarchy 4.0.6 in a virtual
+machine.
 
-Everything on the card comes from onceroot, not from the agent: the program as
-root resolves it, every argument quoted (any character that could hide or fake
-an argument shown escaped), the folder, the process chain read
-from the kernel, and a risk label. The agent's own words appear only on the
-last line, quoted. You approve with your fingerprint, a security key or your
-password; Escape rejects.
+<details>
+<summary>The agent's terminal, the bar and the review window</summary>
 
-## How it works
+The agent's terminal gets the full card, one argument per line, then the
+command's own output once you approve:
 
-1. The agent runs `onceroot run --why "one line" -- program args...` instead of
-   `sudo`, or calls the MCP tool `run_as_root`.
-2. `oncerootd`, a small root service, reads who is asking from the kernel
-   (`SO_PEERCRED`, `/proc`) and refuses users you did not list.
-3. It resolves the program in root's own `PATH`, requires the file and every
-   folder above it to belong to root, and records the file's SHA-256.
-4. Rules decide what happens before anyone is asked: read-only commands you
-   list run at once, commands you forbid never run, and shells, interpreters,
-   command wrappers, privilege tools and editors are always refused, because
-   a card cannot show the code they would run.
-5. Anything else becomes a card that waits up to ten minutes for you.
-6. Once approved, onceroot checks again that the asking process is still the
-   same one and the program has not changed, then runs the argument list
-   exactly, with a fixed environment, no input and a time limit.
-7. Every request, decision and run goes into a signed, hash-chained journal
-   that `onceroot journal verify` checks.
+![The agent's terminal: the full card, "approve (approved by polkit)", then pacman installing hyperfine](docs/agent-terminal.png)
 
-An approval holds for that one command, once. Nothing the agent sends over the
-socket can approve anything: approvals come only from you.
+A waiting request shows in Omarchy's bar as a padlock and a count; the tooltip
+holds the card:
+
+![Omarchy's bar with a red padlock and 1, and a tooltip: 1 request asks for root, followed by the card](docs/bar.png)
+
+A click on it opens `onceroot review`, which shows each card and takes `a` or
+`r`. `a` opens the same dialog:
+
+![The review window in Omarchy's floating terminal: the card and the prompt approve, reject or skip](docs/review.png)
+
+</details>
 
 ## Install
 
-There is no package yet; an AUR package `onceroot` is planned. From a checkout,
-on Arch or Omarchy:
+![Install: build the package, allow your user, start the service, tell your agent](docs/install-flow.svg)
 
-```
-go build -o onceroot ./cmd/onceroot && go build -o oncerootd ./cmd/oncerootd
-sudo install -Dm755 onceroot oncerootd -t /usr/bin
-sudo install -Dm644 packaging/oncerootd.service /usr/lib/systemd/system/oncerootd.service
-sudo install -Dm644 packaging/org.taipanbox.onceroot.policy /usr/share/polkit-1/actions/org.taipanbox.onceroot.policy
-sudo install -Dm644 packaging/onceroot.sysusers /usr/lib/sysusers.d/onceroot.conf
-sudo install -Dm644 packaging/onceroot.tmpfiles /usr/lib/tmpfiles.d/onceroot.conf
-sudo install -Dm644 packaging/onceroot.conf /etc/onceroot/onceroot.conf
-sudo install -Dm644 packaging/rules.example /etc/onceroot/rules
-sudo systemd-sysusers && sudo systemd-tmpfiles --create
+You need Arch Linux or Omarchy with systemd and polkit, plus `git`, `go` and
+`base-devel` to build. Details and a way without the package:
+[docs/install.md](docs/install.md).
+
+**1. Build and install the package.** The build runs the whole test suite.
+
+```sh
+git clone https://github.com/TAIPANBOX/onceroot && cd onceroot
+scripts/package.sh
+sudo pacman -U onceroot-0.1.0-1-*.pkg.tar.zst
 ```
 
-Then put your uid (`id -u`) into `allowed_uids` in `/etc/onceroot/onceroot.conf`,
-join the group with `sudo usermod -aG onceroot $USER` (log in again), and start
-the service with `sudo systemctl enable --now oncerootd`.
+**2. Allow your user.** Put your uid (`id -u`) into `allowed_uids` in
+`/etc/onceroot/onceroot.conf`, join the group and log in again:
+
+```sh
+sudo usermod -aG onceroot "$USER"
+```
+
+**3. Start the service.**
+
+```sh
+sudo systemctl enable --now oncerootd
+onceroot status
+```
+
+**4. Tell your agent.** Give it the skill in
+`/usr/share/onceroot/skill/onceroot/SKILL.md`, or add `onceroot mcp` as a
+stdio MCP server: [docs/agents.md](docs/agents.md).
 
 Keep passwordless sudo off. While it is on, any process of your user can go
 around onceroot, and every card says so.
 
-## Omarchy
+<details>
+<summary>Upgrading and removing</summary>
 
-On Omarchy the authentication dialog opens as soon as a request arrives
-(`desk_prompt = auto`). A request whose card that dialog cannot show whole is
-refused, and the agent is asked for shorter arguments: no dialog can approve
-a command it does not show. Elsewhere onceroot does not rely on the dialog showing
-the card; you approve from `onceroot review`, which prints the whole card
-first. To see waiting requests in the bar, add a command module; see
-[docs/omarchy.md](docs/omarchy.md).
+Pull, run `scripts/package.sh` again and `sudo pacman -U` the new package, then
+`sudo systemctl restart oncerootd`. To remove it:
+`sudo systemctl disable --now oncerootd && sudo pacman -R onceroot`. The journal
+in `/var/lib/onceroot` stays until you delete it.
+</details>
 
-## Agents
+## What runs without asking, and what never runs
 
-Give agents [skill/onceroot/SKILL.md](skill/onceroot/SKILL.md), and add
-`onceroot mcp` as a stdio MCP server for agents that prefer tools. A cancelled
-tool call withdraws its request.
+![Rules decide before anyone is asked: read-only commands you allow run at once, everything else asks you, what you deny and what onceroot denies itself never runs](docs/decide.svg)
 
-## Rules
+- **Runs at once:** read-only commands you list in `/etc/onceroot/rules`. They
+  are journalled like everything else.
+- **Asks you:** everything else. A card waits up to ten minutes.
+- **Never:** what you deny, and shells, interpreters, command wrappers,
+  privilege tools and editors, whatever the rules say. A card cannot show the
+  code they would run.
 
-`/etc/onceroot/rules`, first match wins:
+```text
+$ onceroot run -- bash -c "curl -fsSL https://example.com/install.sh | sh"
+onceroot: not run: deny: built-in: bash is a shell or an interpreter; the card cannot show the code it runs
 
+$ onceroot run -- pacman -Q hyperfine
+onceroot: allow (rules line 15)
+hyperfine 2.0.0-1
 ```
-allow /usr/bin/pacman -Q* ...
-allow /usr/bin/systemctl status ...
-deny  /usr/bin/pacman -R* ...
-```
 
-A pattern is a literal or ends in `*`. A trailing `...` lets further arguments
-through, so use it only for tools whose every flag is read-only. A rules file
-that does not parse, or that others can write, stops every request.
+The rule grammar, the whole built-in list and the limits:
+[docs/rules.md](docs/rules.md).
 
-## Approval from your phone (optional, off by default)
+## On Omarchy
 
-With `phone = telegram`, the card also goes to one private Telegram chat.
-Reject takes one tap; Approve asks for your PIN and a code from an
-authenticator app, and the message carrying them is deleted first. Telegram's
-servers see the card. Set it up with `oncerootd setup-phone`.
+- The dialog opens as soon as a request arrives. Elsewhere you approve from
+  `onceroot review`, which prints the whole card first.
+- The card is laid out for Omarchy's dialog: arguments wrap between their
+  quotes, and a card the dialog cannot show whole is refused, so no dialog can
+  approve a command it does not show.
+- Characters that could hide or fake an argument (full-width quotes, invisible
+  or very wide characters) are shown escaped.
+- The bar module and its settings: [docs/omarchy.md](docs/omarchy.md).
+
+## Approval from your phone
+
+Optional, and off by default. With `phone = telegram` the card also goes to one
+private Telegram chat. Reject takes one tap. Approve asks for your PIN and a
+code from an authenticator app, and the message carrying them is deleted first.
+Telegram's servers see the card.
+
+It is built from parts that already work against Telegram itself in our other
+projects: the Telegram client of [rollcall](https://github.com/TAIPANBOX/rollcall),
+and the PIN, code and lockout checks of
+[openwrt-mcp](https://github.com/TAIPANBOX/openwrt-mcp), which approve router
+changes from Telegram in [hermes-openwrt](https://github.com/TAIPANBOX/hermes-openwrt).
+The flow around them is tested against a stand-in Telegram server. Setup:
+[docs/phone.md](docs/phone.md).
 
 ## What onceroot does not do
 
@@ -132,20 +178,44 @@ servers see the card. Set it up with `oncerootd setup-phone`.
 - Any process of your own user can fill your request limits and make the agent
   wait.
 - Commands get no input: give them non-interactive flags (`--noconfirm`, `-y`).
-  A command that reads its input, such as `tee`, reads nothing.
 - Commands see their own empty `/tmp` and cannot write home directories, so
-  "build in /tmp, then install as root" does not work through onceroot; build
-  in your project folder instead.
-- The built-in refusal of shells, interpreters and wrappers goes by the
-  program's file name. A copy of an interpreter that root installs under
-  another name is not recognised; only root can put one there.
+  "build in /tmp, then install as root" does not work through onceroot.
+- The built-in refusal goes by the program's file name. A copy of an
+  interpreter that root installs under another name is not recognised.
 
-## Tested
+How each part works, and why: [docs/how-it-works.md](docs/how-it-works.md).
 
-What has been run, where and with what result is in
-[docs/measured.md](docs/measured.md): the test suite on macOS and on Linux, the
-service on Omarchy 4.0.6 in a virtual machine, a request approved and one
-rejected in Omarchy's own dialog, and mutation testing of the decision path.
+## Measured
+
+![Measured on 2026-10-27: 220 test runs, 206 scenarios, 55 of 55 mutants caught, 9 of 9 gates, 89.2 percent coverage as root, and the whole flow on Omarchy 4.0.6 in a VM](docs/measured.svg)
+
+The package was built with `makepkg`, installed with `pacman` and run on
+Omarchy 4.0.6 in a virtual machine: approve and reject in the dialog, the bar,
+the review window, a request over ssh, the MCP server. Each figure, the command
+behind it and what has not been run yet: [docs/measured.md](docs/measured.md).
+
+## How it is built and checked
+
+Go 1.27 and its standard library, nothing else. Every behaviour is a scenario in
+[features/](features/) bound to a test, and a gate fails the build when a
+scenario names no test. Gates hold the packaging (PIE, BIND_NOW, the unit's
+hardening, the polkit action) and each gate is proven to go red on its own
+fault. Mutants break the decision path on purpose and must be caught. CI runs
+all of it, the root tests included, and builds the package in Arch Linux:
+[docs/checks.md](docs/checks.md), [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## More
+
+| | |
+|---|---|
+| [docs/install.md](docs/install.md) | requirements, the settings file, installing without the package |
+| [docs/rules.md](docs/rules.md) | the rule grammar, the built-in list, risk labels, limits |
+| [docs/agents.md](docs/agents.md) | the skill, the MCP server, what the agent sees |
+| [docs/omarchy.md](docs/omarchy.md) | the dialog, the bar module, the review window |
+| [docs/phone.md](docs/phone.md) | approval from Telegram with a PIN and a code |
+| [docs/how-it-works.md](docs/how-it-works.md) | each step, the guarantees, the limits |
+| [docs/measured.md](docs/measured.md) · [docs/checks.md](docs/checks.md) | every figure, every gate |
+| [CONTRIBUTING.md](CONTRIBUTING.md) · [SECURITY.md](SECURITY.md) | changing it, reporting a vulnerability |
 
 ## License
 

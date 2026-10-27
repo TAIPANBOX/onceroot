@@ -151,6 +151,21 @@ Fixed in this pass:
   the last build() and the last CGO_ENABLED, and check() measures the binaries.
 - Lines the agent's words go on in carry a mark outside text cannot show.
 
+## 2026-10-27, fourth pass: renamed, published, pictured
+
+- Renamed from askroot to onceroot (no change in behaviour); the suite, the
+  gates (9 of 9) and the mutants (55 of 55) were run again after the rename.
+- The first CI run on GitHub, 16:28 to 16:33: formatting, vet, module
+  verification, the package build flags with the binaries measured, the race
+  detector, the whole suite as root with the end-to-end daemon test, the gate
+  teeth, the mutants and govulncheck, all green.
+- The bar shows a padlock and the count instead of `root? N`; checked in the
+  VM.
+- The screenshots in the README and in docs were taken in the same Omarchy
+  4.0.6 VM with the package built by `makepkg`: a request to install hyperfine,
+  rejected once in the dialog, then approved from the review window and
+  installed (`hyperfine 2.0.0-1`).
+
 ## Not run yet
 
 - polkit dialogs other than Omarchy's (GNOME, KDE, lxqt): with desk_prompt=auto
@@ -158,6 +173,9 @@ Fixed in this pass:
 - A fingerprint or FIDO2 approval (the VM has neither).
 - `makepkg` against the published release tarball: the PKGBUILD's checksum
   stays `SKIP` until the tag exists, and must be set then.
-- The Telegram module against the real Bot API.
+- onceroot's own Telegram flow end to end against Telegram itself. Its parts
+  already run against Telegram in other projects: the client in rollcall, the
+  PIN, code and lockout in openwrt-mcp (approvals from Telegram in
+  hermes-openwrt); the flow is tested against a stand-in server.
 - Any agent (Claude Code, Codex) using the skill or the MCP tool for real; the
   MCP server was driven by a scripted client.

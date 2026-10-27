@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="560" viewBox="0 0 1280 560" role="img" aria-label="Rules decide before anyone is asked: read-only commands you allow run at once, everything else asks you, what you deny and what onceroot denies itself never runs">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0a0e16"/>
+    <stop offset="1" stop-color="#0d1117"/>
+  </linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#2dd4bf"/>
+    <stop offset="1" stop-color="#4493f8"/>
+  </linearGradient>
+  <linearGradient id="wordmark" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#e6edf3"/>
+    <stop offset="1" stop-color="#2dd4bf"/>
+  </linearGradient>
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#161b22" stroke-width="1"/>
+  </pattern>
+  <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.45"/>
+  </filter>
+  <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+    <feGaussianBlur stdDeviation="8" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<rect x="0" y="0" width="1280" height="560" fill="url(#bg)"/>
+<rect x="0" y="0" width="1280" height="560" fill="url(#grid)" opacity="0.5"/>
+<rect x="0" y="0" width="1280" height="4" fill="url(#accent)"/>
+<text x="60" y="64" font-size="22" font-weight="700" fill="#e6edf3" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">Before anyone is asked, rules decide. First match wins.</text>
+<text x="60" y="92" font-size="15" fill="#69788b" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">/etc/onceroot/rules; a rules file others can write, or one that does not parse, stops every request.</text>
+<rect x="60" y="122" width="1160" height="88" rx="8" ry="8" fill="#1b2331" stroke="#283341" stroke-width="1" filter="url(#soft)"/>
+<rect x="60" y="122" width="6" height="88" rx="3" ry="3" fill="#3fb950"/>
+<rect x="86" y="140" width="132" height="22" rx="11.0" ry="11.0" fill="#141a23" stroke="#3fb950" stroke-width="1"/>
+<text x="152.0" y="155.5" font-size="12.5" fill="#3fb950" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="middle">runs at once</text>
+<text x="236" y="157" font-size="19" font-weight="700" fill="#e6edf3" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">Read-only commands you allow</text>
+<text x="86" y="192" font-size="15" fill="#9aa7b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="start">allow /usr/bin/pacman -Q* ... · allow /usr/bin/systemctl status ...</text>
+<rect x="60" y="226" width="1160" height="88" rx="8" ry="8" fill="#1b2331" stroke="#283341" stroke-width="1" filter="url(#soft)"/>
+<rect x="60" y="226" width="6" height="88" rx="3" ry="3" fill="#d29922"/>
+<rect x="86" y="244" width="92" height="22" rx="11.0" ry="11.0" fill="#141a23" stroke="#d29922" stroke-width="1"/>
+<text x="132.0" y="259.5" font-size="12.5" fill="#d29922" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="middle">asks you</text>
+<text x="196" y="261" font-size="19" font-weight="700" fill="#e6edf3" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">Everything else</text>
+<text x="86" y="296" font-size="15" fill="#9aa7b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="start">pacman -S hyperfine · systemctl restart nginx · cp app.conf /etc/app/</text>
+<rect x="60" y="330" width="1160" height="88" rx="8" ry="8" fill="#1b2331" stroke="#283341" stroke-width="1" filter="url(#soft)"/>
+<rect x="60" y="330" width="6" height="88" rx="3" ry="3" fill="#f85149"/>
+<rect x="86" y="348" width="66" height="22" rx="11.0" ry="11.0" fill="#141a23" stroke="#f85149" stroke-width="1"/>
+<text x="119.0" y="363.5" font-size="12.5" fill="#f85149" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="middle">never</text>
+<text x="170" y="365" font-size="19" font-weight="700" fill="#e6edf3" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">Commands you deny</text>
+<text x="86" y="400" font-size="15" fill="#9aa7b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="start">deny /usr/bin/pacman -R* ...</text>
+<rect x="60" y="434" width="1160" height="88" rx="8" ry="8" fill="#1b2331" stroke="#283341" stroke-width="1" filter="url(#soft)"/>
+<rect x="60" y="434" width="6" height="88" rx="3" ry="3" fill="#f85149"/>
+<rect x="86" y="452" width="150" height="22" rx="11.0" ry="11.0" fill="#141a23" stroke="#f85149" stroke-width="1"/>
+<text x="161.0" y="467.5" font-size="12.5" fill="#f85149" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="middle">never, built in</text>
+<text x="254" y="469" font-size="19" font-weight="700" fill="#e6edf3" font-family="ui-sans-serif, -apple-system, Segoe UI, sans-serif" text-anchor="start">Shells, interpreters, wrappers, privilege tools, editors</text>
+<text x="86" y="504" font-size="15" fill="#9aa7b8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="start">bash -c ... · python -c ... · env · xargs · sudo · pkexec · vim</text>
+<text x="1252" y="552" font-size="12" fill="#69788b" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" text-anchor="end">github.com/TAIPANBOX/onceroot</text>
+</svg>
