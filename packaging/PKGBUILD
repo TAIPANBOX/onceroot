@@ -10,7 +10,7 @@ depends=('polkit' 'glibc')
 makedepends=('go')
 backup=('etc/onceroot/onceroot.conf' 'etc/onceroot/rules')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('SKIP')
+sha256sums=('a89bea46faadc1a5cb1fe39b37844bd5c771dc5bf67b0a5630586a2a0c9054e1')
 
 build() {
   cd "$pkgname-$pkgver"

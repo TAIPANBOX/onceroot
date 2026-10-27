@@ -94,3 +94,12 @@ jobs:
 
       - name: Lint the package
         run: namcap onceroot-*.pkg.tar.zst
+
+      - name: Once its version is tagged, the PKGBUILD fetches exactly the released source
+        run: |
+          ver=$(sed -n 's/^pkgver=//p' packaging/PKGBUILD)
+          if git ls-remote --exit-code --tags "https://github.com/$GITHUB_REPOSITORY" "refs/tags/v$ver" >/dev/null; then
+            su builder -c "cd '$GITHUB_WORKSPACE/packaging' && makepkg --verifysource"
+          else
+            echo "v$ver is not tagged yet, so there is no released source to check"
+          fi

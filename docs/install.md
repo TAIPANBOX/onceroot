@@ -36,6 +36,20 @@ The package puts:
 pacman's own hooks create the group and the folders when the package is
 installed.
 
+## From a release
+
+Each release carries the package, the binaries and `SHA256SUMS`, every file with
+a build provenance attestation from this repository's release workflow:
+
+```sh
+gh release download v0.1.0 --repo TAIPANBOX/onceroot -p 'onceroot-*.pkg.tar.zst'
+gh attestation verify onceroot-0.1.0-1-x86_64.pkg.tar.zst --repo TAIPANBOX/onceroot
+sudo pacman -U onceroot-0.1.0-1-x86_64.pkg.tar.zst
+```
+
+Or build the released version yourself: `cd packaging && makepkg -si` fetches the
+tagged source from GitHub and checks it against the checksum in the PKGBUILD.
+
 ## Then
 
 1. Put your uid (`id -u`) into `allowed_uids` in `/etc/onceroot/onceroot.conf`.

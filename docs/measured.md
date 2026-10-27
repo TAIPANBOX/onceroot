@@ -173,6 +173,16 @@ Fixed in this pass:
   rejected once in the dialog, then approved from the review window and
   installed (`hyperfine 2.0.0-1`).
 
+## 2026-10-27, release v0.1.0
+
+- The release workflow built the package in an Arch Linux container from the
+  tag with the tests in `check()`, measured the binaries, attested every file
+  and published the release. Downloaded afterwards: every file matched
+  `SHA256SUMS`, and `gh attestation verify` accepted the package (signed by
+  `release.yml` at `refs/tags/v0.1.0`).
+- GitHub's source tarball of the tag held exactly the files of the tag, and two
+  downloads gave the same SHA-256, now the checksum in the PKGBUILD.
+
 ## Not run yet
 
 - polkit dialogs other than Omarchy's (GNOME, KDE, lxqt): with desk_prompt=auto
