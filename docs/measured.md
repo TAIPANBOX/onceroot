@@ -205,8 +205,10 @@ and removed afterwards, with the bot token.
 
 - A request from an ssh session (no dialog to open there) went to the phone.
   The card arrived in the chat with Approve and Reject; Approve asked for the
-  PIN and the code; the reply carried them; the agent got "approve (approved by
-  phone)" and the command ran once (a file created by root, 18:45).
+  PIN and the code; the reply carried them; the bot deleted that reply and
+  answered "Approved GCAPU." (seen on the phone); the agent got "approve
+  (approved by phone)" and the command ran once (a file created by root,
+  18:45).
 - The PIN was not in the journal (`grep` found it 0 times); the journal
   verified (34 entries).
 - The test showed a defect: a card that cannot reach the phone was dropped
