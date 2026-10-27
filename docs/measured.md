@@ -161,6 +161,13 @@ Fixed in this pass:
   teeth, the mutants and govulncheck, all green.
 - The bar shows a padlock and the count instead of `root? N`; checked in the
   VM.
+- The new CI job that builds the package in an Arch Linux container found a
+  test defect: in a container whose first process never reaps orphans, the
+  grandchild the time limit killed stays a zombie, and the test counted it as
+  alive. onceroot killed the group correctly. The test now reads the process
+  state; with `unshare --pid` (a first process that never reaps) the old test
+  failed and the new one passes, and with the group kill broken on purpose the
+  new test still fails.
 - The screenshots in the README and in docs were taken in the same Omarchy
   4.0.6 VM with the package built by `makepkg`: a request to install hyperfine,
   rejected once in the dialog, then approved from the review window and

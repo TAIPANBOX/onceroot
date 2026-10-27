@@ -3,6 +3,7 @@ package runner
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -119,10 +120,25 @@ func TestRunnerKillsProcessGroupOnTimeout(t *testing.T) {
 		t.Fatalf("no grandchild pid in %q", s.out.String())
 	}
 	time.Sleep(100 * time.Millisecond)
-	if syscall.Kill(pid, 0) == nil {
+	if alive(pid) {
 		syscall.Kill(pid, syscall.SIGKILL)
 		t.Fatalf("grandchild %d outlived the limit", pid)
 	}
+}
+
+// alive reports whether pid is a running process. A killed process stays a
+// zombie until something reaps it, and where PID 1 never does (a container
+// whose first process is not an init, as in CI) kill(pid, 0) still finds it.
+func alive(pid int) bool {
+	if syscall.Kill(pid, 0) != nil {
+		return false
+	}
+	b, err := os.ReadFile(fmt.Sprintf("/proc/%d/stat", pid))
+	if err != nil {
+		return true // no /proc here: kill(pid, 0) is the answer
+	}
+	i := bytes.LastIndexByte(b, ')') // the state follows the command name
+	return !(i >= 0 && i+2 < len(b) && b[i+2] == 'Z')
 }
 
 func TestRunnerRefusesAMissingCwd(t *testing.T) {
