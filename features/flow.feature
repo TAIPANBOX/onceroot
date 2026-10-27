@@ -197,6 +197,11 @@ Feature: oncerootd's flow from request to run
     Given the person dismisses the dialog the review opened
     Then the card is rejected, the agent is told, and no second dialog opens for it
 
+  @test:TestDecisionsAnswerAfterTheJournal
+  Scenario: approving or rejecting is reported done only once the journal has it
+    Given the journal refuses the decision
+    Then the person approving or rejecting is told it failed, and nothing runs
+
   @test:TestApproveWithoutAnAgentKeepsTheCard
   Scenario: an approve that could ask nobody leaves the card held
     Given the approver has no authentication agent, as over ssh

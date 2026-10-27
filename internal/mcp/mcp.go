@@ -117,6 +117,7 @@ func Serve(in io.Reader, out io.Writer, relay Relay) error {
 			callsMu.Lock()
 			delete(calls, key)
 			explicit := cancelled[key]
+			delete(cancelled, key) // the id is free again for a later call
 			callsMu.Unlock()
 			cancel()
 			if explicit {

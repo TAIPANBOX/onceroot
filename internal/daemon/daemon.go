@@ -79,10 +79,38 @@ type Deps struct {
 type Daemon struct {
 	cfg Config
 	d   Deps
+
+	// logged carries, per held card, the result of journalling the decision
+	// on it, so approve and reject answer only after the journal has it (I9).
+	loggedMu sync.Mutex
+	logged   map[string]chan error
 }
 
 // New returns a daemon.
-func New(cfg Config, d Deps) *Daemon { return &Daemon{cfg: cfg, d: d} }
+func New(cfg Config, d Deps) *Daemon {
+	return &Daemon{cfg: cfg, d: d, logged: map[string]chan error{}}
+}
+
+// decisionLog is where the requester of a held card reports whether its
+// decision reached the journal.
+func (dm *Daemon) decisionLog(id string) chan error {
+	dm.loggedMu.Lock()
+	defer dm.loggedMu.Unlock()
+	return dm.logged[id]
+}
+
+// awaitLogged waits for the decision on id to reach the journal.
+func awaitLogged(logged chan error, expires time.Time) error {
+	if logged == nil {
+		return errors.New("the request is no longer waiting")
+	}
+	select {
+	case err := <-logged:
+		return err
+	case <-time.After(time.Until(expires) + 10*time.Second):
+		return errors.New("the decision was not journalled in time")
+	}
+}
 
 // Serve accepts connections until the listener closes.
 func (dm *Daemon) Serve(l *net.UnixListener) error {
@@ -224,6 +252,15 @@ func (dm *Daemon) run(c *net.UnixConn, ev *events, r card.Requester, req wire.Re
 		refuse(id, cd.Hash, err.Error())
 		return
 	}
+	logged := make(chan error, 1)
+	dm.loggedMu.Lock()
+	dm.logged[id] = logged
+	dm.loggedMu.Unlock()
+	defer func() {
+		dm.loggedMu.Lock()
+		delete(dm.logged, id)
+		dm.loggedMu.Unlock()
+	}()
 	if err := dm.journal("held", id, cd.Hash, nil); err != nil {
 		dm.d.Store.Withdraw(id)
 		ev.send(wire.Event{Ev: "error", Reason: "journal unavailable: " + err.Error()})
@@ -245,6 +282,7 @@ func (dm *Daemon) run(c *net.UnixConn, ev *events, r card.Requester, req wire.Re
 				dm.d.Store.Decide(id, cd.Hash, true, "polkit")
 			case errors.Is(err, polkit.ErrNoAgent):
 				// Nobody was asked: the card waits for the review or the phone.
+				dm.journal("no_dialog", id, cd.Hash, nil)
 				ev.send(wire.Event{Ev: "note", ID: id, Reason: "no authentication dialog can open for the asking process: approve it from onceroot review"})
 			case dm.d.Phone == nil && ctx.Err() == nil:
 				dm.d.Store.Decide(id, cd.Hash, false, "polkit")
@@ -279,7 +317,9 @@ func (dm *Daemon) run(c *net.UnixConn, ev *events, r card.Requester, req wire.Re
 	rec, _ := dm.d.Store.Get(id)
 	switch rec.Status {
 	case card.Approved:
-		if err := dm.journal("approved", id, cd.Hash, map[string]string{"by": rec.By}); err != nil {
+		err := dm.journal("approved", id, cd.Hash, map[string]string{"by": rec.By})
+		logged <- err
+		if err != nil {
 			dm.d.Store.Withdraw(id)
 			ev.send(wire.Event{Ev: "error", Reason: "journal unavailable: " + err.Error()})
 			return
@@ -287,7 +327,9 @@ func (dm *Daemon) run(c *net.UnixConn, ev *events, r card.Requester, req wire.Re
 		ev.send(wire.Event{Ev: "decided", ID: id, Verdict: "approve", Reason: "approved by " + rec.By})
 		dm.execute(ev, cd, true)
 	case card.Rejected:
-		if err := dm.journal("rejected", id, cd.Hash, map[string]string{"by": rec.By}); err != nil {
+		err := dm.journal("rejected", id, cd.Hash, map[string]string{"by": rec.By})
+		logged <- err
+		if err != nil {
 			ev.send(wire.Event{Ev: "error", Reason: "journal unavailable: " + err.Error()})
 			return
 		}
@@ -374,8 +416,13 @@ func (dm *Daemon) approve(ev *events, r card.Requester, id string) {
 		ev.send(wire.Event{Ev: "error", Reason: reason})
 		return
 	}
+	logged := dm.decisionLog(id)
 	if err := dm.d.Store.Decide(id, rec.Card.Hash, true, "polkit:"+r.Comm); err != nil {
 		ev.send(wire.Event{Ev: "error", Reason: err.Error()})
+		return
+	}
+	if err := awaitLogged(logged, rec.Card.Expires); err != nil {
+		ev.send(wire.Event{Ev: "error", Reason: "approved, but the journal did not take it, so nothing runs: " + err.Error()})
 		return
 	}
 	ev.send(wire.Event{Ev: "decided", ID: id, Verdict: "approve"})
@@ -389,8 +436,13 @@ func (dm *Daemon) reject(ev *events, r card.Requester, id string) {
 		ev.send(wire.Event{Ev: "error", Reason: "no request " + id})
 		return
 	}
+	logged := dm.decisionLog(id)
 	if err := dm.d.Store.Decide(id, rec.Card.Hash, false, "cli:"+r.Comm); err != nil {
 		ev.send(wire.Event{Ev: "error", Reason: err.Error()})
+		return
+	}
+	if err := awaitLogged(logged, rec.Card.Expires); err != nil {
+		ev.send(wire.Event{Ev: "error", Reason: "rejected, but the journal did not take it: " + err.Error()})
 		return
 	}
 	ev.send(wire.Event{Ev: "decided", ID: id, Verdict: "reject"})

@@ -9,6 +9,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -67,16 +68,17 @@ func (f *fakeRunner) count() int {
 }
 
 type memJournal struct {
-	mu    sync.Mutex
-	kinds []string
-	ids   []string
-	fail  bool
+	mu     sync.Mutex
+	kinds  []string
+	ids    []string
+	fail   bool
+	failOn string // a kind of entry the journal refuses
 }
 
 func (j *memJournal) Append(kind, id string, h [32]byte, d map[string]string) error {
 	j.mu.Lock()
 	defer j.mu.Unlock()
-	if j.fail {
+	if j.fail || kind == j.failOn {
 		return errors.New("disk full")
 	}
 	j.kinds = append(j.kinds, kind)
@@ -489,6 +491,32 @@ func TestNoDeskAgentLeavesTheCardForTheReview(t *testing.T) {
 	}
 	if !strings.Contains(r.out, "onceroot review") {
 		t.Fatalf("the agent was not told why nothing opened: %q", r.out)
+	}
+	if !slices.Contains(h.journal.list(), "no_dialog") {
+		t.Fatalf("the journal does not say no dialog could ask: %v", h.journal.list())
+	}
+}
+
+// The person approving or rejecting hears it is done only once the decision
+// is in the journal (I9): a decision the journal cannot take is not reported
+// as done, and nothing runs.
+func TestDecisionsAnswerAfterTheJournal(t *testing.T) {
+	for op, entry := range map[string]string{"approve": "approved", "reject": "rejected"} {
+		h := start(t, "", nil, time.Minute)
+		h.d.cfg.DeskDialog = false
+		h.journal.mu.Lock()
+		h.journal.failOn = entry
+		h.journal.mu.Unlock()
+		go h.run("pacman", "-S", "x")
+		id := heldID(t, h)
+		h.peers <- approver()
+		if _, err := client.Do(h.sock, wire.Request{Op: op, ID: id}); err == nil {
+			t.Fatalf("%s was reported done although the journal refused it", op)
+		}
+		time.Sleep(50 * time.Millisecond)
+		if h.runner.count() != 0 {
+			t.Fatalf("%s: a command ran", op)
+		}
 	}
 }
 

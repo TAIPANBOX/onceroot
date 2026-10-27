@@ -39,3 +39,8 @@ Feature: Agents that prefer tools ask through MCP
   @test:TestRunContextClosesTheConnectionOnCancel
   Scenario: a cancelled run closes the connection, so oncerootd withdraws the card
     Then the daemon sees the connection close as soon as the run is cancelled
+
+  @test:TestCancelledIDCanBeUsedAgain
+  Scenario: an id is free again once its cancelled call has ended
+    Given a call that was cancelled and has ended
+    Then a later call with the same id is answered once

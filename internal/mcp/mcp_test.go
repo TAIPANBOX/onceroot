@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"io"
 	"strings"
 	"testing"
 	"time"
@@ -143,5 +144,36 @@ func TestCancelledCallStopsTheRelay(t *testing.T) {
 	}
 	if len(a) != 1 || a[0]["id"] != float64(12) {
 		t.Fatalf("answers %v", a)
+	}
+}
+
+// An id is free again once its cancelled call has ended, so a client that
+// reuses it gets an answer (review of 2026-10-27).
+func TestCancelledIDCanBeUsedAgain(t *testing.T) {
+	ended := make(chan struct{}, 1)
+	relay := func(ctx context.Context, argv []string, why string) Result {
+		if argv[0] == "block" {
+			<-ctx.Done()
+			ended <- struct{}{}
+			return Result{}
+		}
+		return Result{Stdout: "ok"}
+	}
+	in, w := io.Pipe()
+	var out bytes.Buffer
+	done := make(chan error, 1)
+	go func() { done <- Serve(in, &out, relay) }()
+	io.WriteString(w, `{"jsonrpc":"2.0","id":21,"method":"tools/call","params":{"name":"run_as_root","arguments":{"argv":["block"],"why":"x"}}}`+"\n")
+	io.WriteString(w, `{"jsonrpc":"2.0","method":"notifications/cancelled","params":{"requestId":21}}`+"\n")
+	<-ended
+	time.Sleep(50 * time.Millisecond)
+	io.WriteString(w, `{"jsonrpc":"2.0","id":21,"method":"tools/call","params":{"name":"run_as_root","arguments":{"argv":["true"],"why":"x"}}}`+"\n")
+	time.Sleep(200 * time.Millisecond)
+	w.Close()
+	if err := <-done; err != nil {
+		t.Fatal(err)
+	}
+	if n := strings.Count(out.String(), `"id":21`); n != 1 {
+		t.Fatalf("the reused id was answered %d times, want once:\n%s", n, out.String())
 	}
 }
