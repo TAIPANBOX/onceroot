@@ -1,0 +1,2 @@
+# Members of onceroot may talk to oncerootd's socket and read its journal.
+g onceroot - -

@@ -1,0 +1,2 @@
+d /run/onceroot 0750 root onceroot -
+d /var/lib/onceroot 0750 root onceroot -

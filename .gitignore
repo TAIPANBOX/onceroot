@@ -1,0 +1,8 @@
+/onceroot
+/oncerootd
+/dist/
+*.test
+*.out
+coverage.*
+.DS_Store
+__pycache__/

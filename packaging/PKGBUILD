@@ -1,0 +1,42 @@
+# Maintainer: TAIPANBOX
+pkgname=onceroot
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='Root for AI agents, one person-approved command at a time'
+arch=('x86_64' 'aarch64')
+url='https://github.com/TAIPANBOX/onceroot'
+license=('MIT')
+depends=('polkit' 'glibc')
+makedepends=('go')
+backup=('etc/onceroot/onceroot.conf' 'etc/onceroot/rules')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  export CGO_ENABLED=0 GOFLAGS='-buildmode=pie -trimpath -mod=readonly -modcacherw'
+  go build -ldflags '-bindnow' -o onceroot ./cmd/onceroot
+  go build -ldflags '-bindnow' -o oncerootd ./cmd/oncerootd
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  go test ./...
+  ONCEROOT_CHECK_BIN="$PWD/onceroot:$PWD/oncerootd" go test -count=1 -run '^TestBuiltBinariesAreHardened$' ./internal/gates/
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  install -Dm755 onceroot "$pkgdir/usr/bin/onceroot"
+  install -Dm755 oncerootd "$pkgdir/usr/bin/oncerootd"
+  install -Dm644 packaging/oncerootd.service "$pkgdir/usr/lib/systemd/system/oncerootd.service"
+  install -Dm644 packaging/org.taipanbox.onceroot.policy "$pkgdir/usr/share/polkit-1/actions/org.taipanbox.onceroot.policy"
+  install -Dm644 packaging/onceroot.sysusers "$pkgdir/usr/lib/sysusers.d/onceroot.conf"
+  install -Dm644 packaging/onceroot.tmpfiles "$pkgdir/usr/lib/tmpfiles.d/onceroot.conf"
+  install -Dm644 packaging/onceroot.conf "$pkgdir/etc/onceroot/onceroot.conf"
+  install -Dm644 packaging/rules.example "$pkgdir/etc/onceroot/rules"
+  install -Dm644 skill/onceroot/SKILL.md "$pkgdir/usr/share/onceroot/skill/onceroot/SKILL.md"
+  install -Dm644 docs/omarchy.md "$pkgdir/usr/share/doc/onceroot/omarchy.md"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/onceroot/LICENSE"
+  install -Dm644 NOTICE "$pkgdir/usr/share/licenses/onceroot/NOTICE"
+}

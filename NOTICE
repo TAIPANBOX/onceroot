@@ -1,0 +1,12 @@
+onceroot ports code from two MIT-licensed projects. Each ported file says so
+in its header.
+
+- openwrt-mcp, https://github.com/TAIPANBOX/openwrt-mcp, a fork of
+  https://github.com/GlassOnTin/openwrt-mcp.
+  Copyright (c) 2026 Ian Williams; additions copyright (c) 2026 Yurii Kostiuk.
+  Ported: the held-action store (approval.go), TOTP and lockout (mfa.go),
+  PIN hashing (pin.go).
+- rollcall, https://github.com/TAIPANBOX/rollcall.
+  Copyright (c) 2026 Yurii Kostiuk.
+  Ported: Ed25519 helpers (internal/sig), the Telegram sender
+  (internal/channel/telegram.go).

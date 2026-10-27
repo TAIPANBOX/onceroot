@@ -1,0 +1,17 @@
+[Unit]
+Description=onceroot: root for AI agents, one approved command at a time
+Documentation=https://github.com/TAIPANBOX/onceroot
+After=polkit.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/oncerootd
+Restart=on-failure
+UMask=0022
+# Commands onceroot runs cannot write home directories or see the user's /tmp.
+# They inherit this umask, so it is root's usual 0022.
+ProtectHome=read-only
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

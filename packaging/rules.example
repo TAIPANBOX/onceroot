@@ -1,0 +1,19 @@
+# /etc/onceroot/rules: what onceroot does before it asks anyone.
+#
+#   allow|deny <absolute program path> [<argument pattern>...] [...]
+#
+# First match wins. A pattern is a literal or ends in * (prefix match).
+# A trailing ... lets further arguments through; without it the number of
+# arguments must match exactly. No match means: ask a person.
+# Shells, interpreters, command wrappers, privilege tools and editors are
+# denied by onceroot itself and no rule here can allow them.
+
+# Read-only queries run without asking. Prefer exact arguments: a trailing
+# ... lets any further flags through, and some tools take flags that change
+# state (journalctl --vacuum-*, for one), so never end an allow rule with ...
+# for a tool unless every flag it accepts is read-only.
+allow /usr/bin/pacman -Q* ...
+allow /usr/bin/systemctl status ...
+
+# Never, whoever asks.
+deny /usr/bin/pacman -R* ...
