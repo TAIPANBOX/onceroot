@@ -151,7 +151,8 @@ func do(inv invocation, e env) int {
 	case "bar":
 		ev, err := client.Do(e.sock, wire.Request{Op: "list"})
 		if err != nil {
-			fmt.Fprintln(e.stdout, `{"text":"root ?","tooltip":"oncerootd is not reachable","class":"active"}`)
+			b, _ := json.Marshal(map[string]string{"text": barIcon + " !", "tooltip": "oncerootd is not reachable", "class": "active"})
+			fmt.Fprintln(e.stdout, string(b))
 			return 0
 		}
 		if b := barJSON(ev.Cards); b != "" {

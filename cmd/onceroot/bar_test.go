@@ -17,15 +17,20 @@ func TestBarSilentWhenNothingWaits(t *testing.T) {
 	}
 }
 
-// Omarchy highlights a command module only for the class "active".
+// Omarchy highlights a command module only for the class "active", and its
+// bar shows icons, so the count stands beside the padlock of its own dialog.
 func TestBarShowsCountAndActive(t *testing.T) {
 	cards := []wire.Listed{{ID: "KQWPT", Status: "held", Card: "ROOT REQUEST KQWPT"}, {ID: "ABCDE", Status: "held", Card: "ROOT REQUEST ABCDE"}, {ID: "ZZZZZ", Status: "rejected"}}
 	var m map[string]string
 	if err := json.Unmarshal([]byte(barJSON(cards)), &m); err != nil {
 		t.Fatal(err)
 	}
-	if m["text"] != "root? 2" || m["class"] != "active" || !strings.Contains(m["tooltip"], "KQWPT") || strings.Contains(m["tooltip"], "ZZZZZ") {
+	if m["text"] != barIcon+" 2" || m["class"] != "active" || !strings.HasPrefix(m["tooltip"], "2 requests ask for root") ||
+		!strings.Contains(m["tooltip"], "KQWPT") || strings.Contains(m["tooltip"], "ZZZZZ") {
 		t.Fatalf("got %v", m)
+	}
+	if err := json.Unmarshal([]byte(barJSON(cards[:1])), &m); err != nil || m["text"] != barIcon+" 1" || !strings.HasPrefix(m["tooltip"], "1 request asks for root") {
+		t.Fatalf("one request: %v %v", m, err)
 	}
 }
 

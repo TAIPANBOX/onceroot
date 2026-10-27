@@ -12,7 +12,8 @@ for example in `bar.layout.right`:
   "tooltip": "onceroot", "onClick": "omarchy-launch-floating-terminal-with-presentation onceroot review" }
 ```
 
-`onceroot bar` prints nothing while no request waits and `root? N` with the
+`onceroot bar` prints nothing while no request waits and a padlock with the
+number of waiting requests, highlighted, with the
 cards in the tooltip when N requests wait. Clicking opens `onceroot review`,
 which shows each card and takes `a` (approve: Omarchy's polkit dialog asks
 for fingerprint, FIDO2 or password) or `r` (reject).

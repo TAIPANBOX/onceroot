@@ -86,7 +86,7 @@ Same VM, onceroot from feat/v1, built by `makepkg` from `git archive HEAD`
 | Package lint | `namcap` | PKGBUILD clean; package: "polkit and glibc may not be needed" (both are: oncerootd runs `pkcheck`, and the binaries load through glibc's `ld-linux`); debug package: build-id links "point to nothing" on their own, and resolve once the main package is installed |
 | Hardening | `readelf` | both binaries PIE, GNU_RELRO, BIND_NOW, built without cgo |
 | Install | `pacman -U` over the earlier manual install | 31 files, 0 altered (`pacman -Qkk`); group and folders created by pacman's own hooks; the earlier journal carried on and verifies |
-| Bar module | module from docs/omarchy.md in `~/.config/omarchy/shell.json` | `root? 2`, highlighted; the tooltip shows both cards; a click opens `onceroot review` in Omarchy's floating terminal; nothing shows while no request waits |
+| Bar module | module from docs/omarchy.md in `~/.config/omarchy/shell.json` | `root? 2` (the label of that day; a padlock and the number since), highlighted; the tooltip shows both cards; a click opens `onceroot review` in Omarchy's floating terminal; nothing shows while no request waits |
 | Review | `a`, then the polkit dialog; `r` | approved and ran once (file 0644 root); rejected; each says so |
 | Dialog, a short card | `desk_prompt = auto`, request typed in foot | the dialog opens at once with the card above the password field |
 | Dialog, fourteen long arguments | same | arguments wrap within the screen, the program and every argument visible |

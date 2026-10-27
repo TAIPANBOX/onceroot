@@ -13,7 +13,7 @@ Feature: The person sees waiting requests in Omarchy's bar
   @test:TestBarShowsCountAndActive
   Scenario: waiting requests show in the bar with their cards
     Given two held requests and one rejected
-    Then the bar shows "root? 2" highlighted, with both cards and not the rejected one in the tooltip
+    Then the bar shows the padlock of Omarchy's own dialog and 2, highlighted, and the tooltip says 2 requests ask for root, with both cards and not the rejected one
 
   @test:TestReviewApprovesAndRejects
   Scenario: the review window acts only on what the person types

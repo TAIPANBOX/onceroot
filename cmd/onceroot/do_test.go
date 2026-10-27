@@ -132,7 +132,7 @@ func TestDoBarIdleAndUnreachable(t *testing.T) {
 	if code, out, _ := run(t, sock, "", "bar"); code != 0 || out != "" {
 		t.Fatalf("idle bar %d %q, want nothing", code, out)
 	}
-	if code, out, _ := run(t, filepath.Join(t.TempDir(), "absent.sock"), "", "bar"); code != 0 || !strings.Contains(out, `"text":"root ?"`) || !strings.Contains(out, `"class":"active"`) {
+	if code, out, _ := run(t, filepath.Join(t.TempDir(), "absent.sock"), "", "bar"); code != 0 || !strings.Contains(out, barIcon+` !"`) || !strings.Contains(out, `"class":"active"`) {
 		t.Fatalf("unreachable bar %d %q", code, out)
 	}
 }
@@ -144,7 +144,7 @@ func TestDoBarAndReview(t *testing.T) {
 		}
 		return []wire.Event{{Ev: "decided", ID: r.ID, Verdict: r.Op}}
 	})
-	if _, out, _ := run(t, sock, "", "bar"); !strings.Contains(out, "root? 1") {
+	if _, out, _ := run(t, sock, "", "bar"); !strings.Contains(out, barIcon+" 1") {
 		t.Fatalf("bar %q", out)
 	}
 	if code, out, _ := run(t, sock, "r\n", "review"); code != 0 || !strings.Contains(out, "KQWPT: rejected") {
