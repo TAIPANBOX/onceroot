@@ -39,7 +39,10 @@ jobs:
         run: namcap onceroot-*.pkg.tar.zst
 
       - name: Build the binaries the package holds, and measure them
+        # root builds here in a checkout builder owns; git must trust it, or Go
+        # cannot stamp the commit into the binaries
         run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           ver=$(sed -n 's/^pkgver=//p' packaging/PKGBUILD)
           mkdir -p release
           for c in onceroot oncerootd; do
