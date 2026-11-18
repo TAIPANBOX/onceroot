@@ -60,6 +60,9 @@ expect red '^TestOmarchyPluginTranslations$' "$d" "plugin: Ukrainian string miss
 d=$(fresh); sed -i.bak '/omarchy-plugin\/Model.js/d' "$d/packaging/PKGBUILD"
 expect red '^TestOmarchyPluginShipsInPackage$' "$d" "plugin: package leaves out Model.js"; rm -rf "$d"
 
+d=$(fresh); sed -i.bak 's| nodejs  # polkit| # polkit|' "$d/.github/workflows/release.yml"
+expect red '^TestWorkflowsInstallNodeForThePlugin$' "$d" "plugin: release workflow without nodejs"; rm -rf "$d"
+
 if command -v node >/dev/null 2>&1; then
   d=$(fresh); sed -i.bak 's|^var ID = .*|var ID = /^[A-Z]{5}$/|' "$d/omarchy-plugin/Model.js"
   expect red '^TestOmarchyPluginModel$' "$d" "plugin: id check lets I and O through"; rm -rf "$d"

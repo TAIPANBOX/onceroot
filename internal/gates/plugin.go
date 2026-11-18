@@ -250,3 +250,47 @@ func checkPluginPackaged(pkgbuild []byte, dir string) []string {
 	}
 	return p
 }
+
+// checkWorkflowsInstallNode requires every workflow that builds the package
+// (and so runs the plugin model tests in check()) to install nodejs; without
+// it TestOmarchyPluginModel stops the build in CI.
+func checkWorkflowsInstallNode(dir string) []string {
+	files, _ := filepath.Glob(filepath.Join(dir, ".github", "workflows", "*.yml"))
+	var p []string
+	builds := 0
+	for _, f := range files {
+		b, err := os.ReadFile(f)
+		if err != nil {
+			p = append(p, err.Error())
+			continue
+		}
+		s := string(b)
+		if !strings.Contains(s, "scripts/package.sh") {
+			continue
+		}
+		builds++
+		ok := false
+		for _, line := range strings.Split(s, "\n") {
+			if i := strings.Index(line, " #"); i >= 0 {
+				line = line[:i] // a comment naming nodejs installs nothing
+			}
+			fields := strings.Fields(line)
+			pacman := false
+			for _, f := range fields {
+				if f == "pacman" {
+					pacman = true
+				}
+				if pacman && f == "nodejs" {
+					ok = true
+				}
+			}
+		}
+		if !ok {
+			p = append(p, filepath.Base(f)+": builds the package but does not install nodejs for the plugin model tests")
+		}
+	}
+	if builds == 0 {
+		return []string{"no workflow builds the package: measured nothing"}
+	}
+	return p
+}

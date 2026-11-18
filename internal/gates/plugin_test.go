@@ -164,3 +164,35 @@ func TestPluginPackagedGateHasTeeth(t *testing.T) {
 		t.Fatal("an empty plugin folder passed: should say measured nothing")
 	}
 }
+
+func TestWorkflowsInstallNodeForThePlugin(t *testing.T) {
+	if p := checkWorkflowsInstallNode(repoRoot(t)); len(p) > 0 {
+		t.Fatalf("workflows:\n%s", strings.Join(p, "\n"))
+	}
+}
+
+func TestWorkflowsInstallNodeGateHasTeeth(t *testing.T) {
+	build := "      - run: su builder -c \"scripts/package.sh\"\n"
+	cases := []struct {
+		name  string
+		files map[string]string
+		fail  bool
+	}{
+		{"clean", map[string]string{".github/workflows/a.yml": "      - run: pacman -Syu --noconfirm git go nodejs\n" + build}, false},
+		{"no nodejs", map[string]string{".github/workflows/a.yml": "      - run: pacman -Syu --noconfirm git go\n" + build}, true},
+		{"nodejs only in a comment", map[string]string{".github/workflows/a.yml": "      - run: pacman -Syu --noconfirm git go  # nodejs: the plugin tests\n" + build}, true},
+		{"nodejs-lts is another package", map[string]string{".github/workflows/a.yml": "      - run: pacman -Syu --noconfirm git go nodejsx\n" + build}, true},
+		{"one of two lacks it", map[string]string{
+			".github/workflows/a.yml": "      - run: pacman -Syu --noconfirm git go nodejs\n" + build,
+			".github/workflows/b.yml": "      - run: pacman -Syu --noconfirm git go\n" + build,
+		}, true},
+		{"no package build: measured nothing", map[string]string{".github/workflows/a.yml": "      - run: echo hi\n"}, true},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := len(checkWorkflowsInstallNode(writeTree(t, c.files))) > 0; got != c.fail {
+				t.Fatalf("fail=%v, want %v", got, c.fail)
+			}
+		})
+	}
+}

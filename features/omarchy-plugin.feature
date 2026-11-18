@@ -37,3 +37,7 @@ Feature: onceroot as a plugin in Omarchy's own bar
   @test:TestOmarchyPluginShipsInPackage
   Scenario: the package carries the plugin
     Then the PKGBUILD installs every plugin file under /usr/share/onceroot/omarchy-plugin
+
+  @test:TestWorkflowsInstallNodeForThePlugin
+  Scenario: every workflow that builds the package can run the plugin's tests
+    Then each workflow that runs scripts/package.sh installs nodejs, so the release build does not stop on a missing node
