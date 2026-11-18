@@ -45,4 +45,28 @@ expect red '^TestScenariosBoundToTests$' "$d" "bindings: tag naming no test"; rm
 d=$(fresh); rm -f "$d"/features/*.feature
 expect red '^TestScenariosBoundToTests$' "$d" "bindings: no features measured nothing"; rm -rf "$d"
 
+d=$(fresh); sed -i.bak 's|"id": "taipanbox.onceroot"|"id": "omarchy.onceroot"|' "$d/omarchy-plugin/manifest.json"
+expect red '^TestOmarchyPluginManifest$' "$d" "plugin: reserved omarchy id"; rm -rf "$d"
+
+d=$(fresh); awk '/textFormat: Text.PlainText/ && !done { done=1; next } { print }' "$d/omarchy-plugin/BarWidget.qml" > "$d/w" && mv "$d/w" "$d/omarchy-plugin/BarWidget.qml"
+expect red '^TestOmarchyPluginTextIsPlain$' "$d" "plugin: one Text left as AutoText"; rm -rf "$d"
+
+d=$(fresh); sed -i.bak 's|Util.execArgv(argv)|Util.execDetached(argv.join(" "))|' "$d/omarchy-plugin/BarWidget.qml"
+expect red '^TestOmarchyPluginTextIsPlain$' "$d" "plugin: command through a shell string"; rm -rf "$d"
+
+d=$(fresh); sed -i.bak '/"card.reject"/d' "$d/omarchy-plugin/i18n/uk.json"
+expect red '^TestOmarchyPluginTranslations$' "$d" "plugin: Ukrainian string missing"; rm -rf "$d"
+
+d=$(fresh); sed -i.bak '/omarchy-plugin\/Model.js/d' "$d/packaging/PKGBUILD"
+expect red '^TestOmarchyPluginShipsInPackage$' "$d" "plugin: package leaves out Model.js"; rm -rf "$d"
+
+if command -v node >/dev/null 2>&1; then
+  d=$(fresh); sed -i.bak 's|^var ID = .*|var ID = /^[A-Z]{5}$/|' "$d/omarchy-plugin/Model.js"
+  expect red '^TestOmarchyPluginModel$' "$d" "plugin: id check lets I and O through"; rm -rf "$d"
+  d=$(fresh); sed -i.bak 's|if (r.status !== "held" \|\| !validId(r.id)) continue|if (!validId(r.id)) continue|' "$d/omarchy-plugin/Model.js"
+  expect red '^TestOmarchyPluginModel$' "$d" "plugin: finished requests counted as waiting"; rm -rf "$d"
+else
+  echo "FAIL  plugin model: node not installed, measured nothing"; fail=1
+fi
+
 exit $fail

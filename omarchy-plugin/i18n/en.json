@@ -1,0 +1,10 @@
+{
+  "bar.waiting": { "one": "%1 request asks for root", "other": "%1 requests ask for root" },
+  "bar.unreachable": "oncerootd is not reachable: is the service running and are you in the onceroot group?",
+  "popup.waiting": { "one": "%1 request asks for root", "other": "%1 requests ask for root" },
+  "popup.unreachable": "oncerootd is not reachable",
+  "popup.note": "Approve opens your authentication dialog with this same card; only what it shows can run, once.",
+  "card.approve": "Approve…",
+  "card.reject": "Reject",
+  "popup.review": "Review in a terminal"
+}
