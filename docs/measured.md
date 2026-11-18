@@ -3,6 +3,41 @@
 Until 2026-10-27 the project was called askroot; the runs below were made
 under that name and are shown with the current names of commands and files.
 
+## 2026-11-18, Omarchy 4.5.0 and the bar plugin
+
+Omarchy's own published VM image for 4.5.0 (`stable/4.5.0/494/omarchy-4.5.0.qcow2`,
+SHA-256 `fea962bb…dc9f`, kernel 7.2.15-1-omarchy), booted straight into its
+kernel under QEMU with software emulation on a Debian 13 host, 4 vCPU, 6 GB.
+onceroot 0.1.0 from the GitHub release, checksum matched, installed with
+`pacman -U` and set up as README says.
+
+| What | Result |
+|---|---|
+| A short card, request typed in foot inside the session | Omarchy 4.5's dialog opened at once with the whole card above the password field; approved with the password, the command ran once |
+| Five long arguments | wrapped between their quotes, every argument visible, card above the field |
+| Ten long arguments | refused before any dialog: the card is too long to show whole |
+| Escape | rejected, nothing ran |
+| The command module in `shell.json`, as before 4.5 | padlock and count, the card in the tooltip, a click opens `onceroot review`, `a` opens the dialog, the command ran |
+| MCP, a JSON-RPC client over `onceroot mcp` | an allowed read ran at once; `bash -c` refused with the built-in reason |
+| The bar plugin `taipanbox.onceroot` | `omarchy plugin validate` exit 0; on the bar, the padlock and count; a click opens the cards; Approve opened Omarchy's dialog with the same card and the command ran once; Reject rejected; a new request showed within 6 seconds while no timer ran (the journal watch); the padlock went when nothing waited |
+| Journal | `onceroot journal verify`: 25 entries verified |
+
+Found by this run: Omarchy 4.5's dialog paints a background behind one line of
+the message only, so the other lines of a card stand over the window behind
+it. onceroot cannot change Omarchy's dialog; docs/omarchy.md says so, and the
+plugin's card and `onceroot review` show the card on a solid background.
+
+Checks of the tree on the same day, on the Debian 13 host, go1.27.4, node 22:
+
+| What | Command | Result |
+|---|---|---|
+| Tests with the race detector | `go test -race -count=1 ./...` | 19 packages pass; 254 test runs |
+| Scenarios bound to tests | `TestScenariosBoundToTests` | 18 feature files, 217 scenarios |
+| The plugin's model | `node --test omarchy-plugin/test/` (run by `TestOmarchyPluginModel`) | 9 pass, 0 fail |
+| Gate teeth | `scripts/gates-have-teeth.sh` | 16 of 16, seven of them new for the plugin: reserved id, a Text left as AutoText, a command through a shell string, a Ukrainian string missing, the package leaving out Model.js, an id check that lets I and O through, finished requests counted as waiting |
+| Mutation testing | `python3 -I scripts/mutate.py` | 60 caught, 0 survived, 0 invalid |
+| Coverage | `go test -coverpkg=./... ./...` as a normal user | 87.0 % |
+
 ## 2026-10-27, MacBook (darwin/arm64), go1.27.3, branch feat/v1
 
 | What | Command | Result |
