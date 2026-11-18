@@ -86,12 +86,26 @@ You need Arch Linux or Omarchy with systemd and polkit, plus `git`, `go` and
 `base-devel` to build. Details and a way without the package:
 [docs/install.md](docs/install.md).
 
-**1. Build and install the package.** The build runs the whole test suite. Or
-take the package from the [release](https://github.com/TAIPANBOX/onceroot/releases/tag/v0.2.0)
-and install it with `sudo pacman -U`.
+**1. Install the released package, verified.** onceroot runs as root, so check
+what you install: the package must come from this repository's release
+workflow, built from the `v0.2.0` tag at commit `52dd00e83e81`, and match its
+checksum.
 
 ```sh
-git clone https://github.com/TAIPANBOX/onceroot && cd onceroot
+gh release download v0.2.0 --repo TAIPANBOX/onceroot -p 'onceroot-0.2.0-1-x86_64.pkg.tar.zst'
+gh attestation verify onceroot-0.2.0-1-x86_64.pkg.tar.zst --repo TAIPANBOX/onceroot \
+  --signer-workflow TAIPANBOX/onceroot/.github/workflows/release.yml \
+  --source-ref refs/tags/v0.2.0 --source-digest 52dd00e83e81704c462532beaf1707570aae40e4 \
+  --deny-self-hosted-runners
+echo '8a3823088582065d1d5e6c8017424df0603204e7deab11f1ecc417cabfc73e05  onceroot-0.2.0-1-x86_64.pkg.tar.zst' | sha256sum -c -
+sudo pacman -U onceroot-0.2.0-1-x86_64.pkg.tar.zst
+```
+
+Or build that same tag yourself; the build runs the whole test suite:
+
+```sh
+git clone --branch v0.2.0 https://github.com/TAIPANBOX/onceroot && cd onceroot
+test "$(git rev-parse HEAD)" = 52dd00e83e81704c462532beaf1707570aae40e4
 scripts/package.sh
 sudo pacman -U onceroot-0.2.0-1-*.pkg.tar.zst
 ```
