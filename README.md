@@ -9,7 +9,7 @@ command, you see it in your desktop's own authentication dialog, and it runs
 once. Built for [Omarchy](https://omarchy.org) first.
 
 [![ci](https://github.com/TAIPANBOX/onceroot/actions/workflows/ci.yml/badge.svg)](https://github.com/TAIPANBOX/onceroot/actions/workflows/ci.yml)
-![Omarchy 4.0](https://img.shields.io/badge/Omarchy-4.0-2dd4bf)
+![Omarchy 4.0 and 4.5](https://img.shields.io/badge/Omarchy-4.0%20%7C%204.5-2dd4bf)
 ![Go 1.27, standard library only](https://img.shields.io/badge/Go%201.27-stdlib%20only-4493f8)
 ![license MIT](https://img.shields.io/badge/license-MIT-9aa7b8)
 
@@ -158,7 +158,12 @@ The rule grammar, the whole built-in list and the limits:
   approve a command it does not show.
 - Characters that could hide or fake an argument (full-width quotes, invisible
   or very wide characters) are shown escaped.
-- The bar module and its settings: [docs/omarchy.md](docs/omarchy.md).
+- On Omarchy 4.5, a native bar plugin shows waiting requests as a padlock and
+  a count; a click opens each card with Approve and Reject, and Approve opens
+  Omarchy's own dialog with the same card. The package carries it:
+  [docs/omarchy.md](docs/omarchy.md#the-bar-plugin).
+
+![The bar plugin's card: the whole request, Approve and Reject, and Review in a terminal](docs/plugin-card.png)
 
 ## Approval from your phone
 
@@ -200,7 +205,9 @@ How each part works, and why: [docs/how-it-works.md](docs/how-it-works.md).
 The package was built with `makepkg`, installed with `pacman` and run on
 Omarchy 4.0.6 in a virtual machine: approve and reject in the dialog, the bar,
 the review window, a request over ssh, and Claude Code asking for root on its
-own, through the skill and through the MCP server. Each figure, the command
+own, through the skill and through the MCP server. On 2026-11-18 the released
+0.1.0 package ran unchanged on Omarchy 4.5.0, Omarchy's own published VM image:
+the dialog, the bar, review, MCP, and the new bar plugin. Each figure, the command
 behind it and what has not been run yet: [docs/measured.md](docs/measured.md).
 
 ## How it is built and checked
@@ -220,7 +227,7 @@ all of it, the root tests included, and builds the package in Arch Linux:
 | [docs/install.md](docs/install.md) | requirements, the settings file, installing without the package |
 | [docs/rules.md](docs/rules.md) | the rule grammar, the built-in list, risk labels, limits |
 | [docs/agents.md](docs/agents.md) | the skill, the MCP server, what the agent sees |
-| [docs/omarchy.md](docs/omarchy.md) | the dialog, the bar module, the review window |
+| [docs/omarchy.md](docs/omarchy.md) | the dialog, the bar plugin, the bar module, the review window |
 | [docs/phone.md](docs/phone.md) | approval from Telegram with a PIN and a code |
 | [docs/how-it-works.md](docs/how-it-works.md) | each step, the guarantees, the limits |
 | [docs/measured.md](docs/measured.md) · [docs/checks.md](docs/checks.md) | every figure, every gate |
