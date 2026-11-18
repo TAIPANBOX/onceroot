@@ -54,9 +54,25 @@ card, and leaves the decision to Omarchy's dialog.
 ## Requirements
 
 - Omarchy 4.5 or later.
-- onceroot 0.1.0 or later, installed and running, with your user in the
-  `onceroot` group: [install onceroot](https://github.com/TAIPANBOX/onceroot#install).
-  The widget calls only the `onceroot` command; it has no other dependency.
+- onceroot 0.2.0 or later, installed and running, with your user in the
+  `onceroot` group. onceroot runs as root, so install it verified: the package
+  from its release workflow, built from the `v0.2.0` tag at commit
+  `52dd00e83e81`, with this checksum:
+
+```sh
+gh release download v0.2.0 --repo TAIPANBOX/onceroot -p 'onceroot-0.2.0-1-x86_64.pkg.tar.zst'
+gh attestation verify onceroot-0.2.0-1-x86_64.pkg.tar.zst --repo TAIPANBOX/onceroot \
+  --signer-workflow TAIPANBOX/onceroot/.github/workflows/release.yml \
+  --source-ref refs/tags/v0.2.0 --source-digest 52dd00e83e81704c462532beaf1707570aae40e4 \
+  --deny-self-hosted-runners
+echo '8a3823088582065d1d5e6c8017424df0603204e7deab11f1ecc417cabfc73e05  onceroot-0.2.0-1-x86_64.pkg.tar.zst' | sha256sum -c -
+sudo pacman -U onceroot-0.2.0-1-x86_64.pkg.tar.zst
+```
+
+  Then allow your user and start the service as
+  [onceroot's README](https://github.com/TAIPANBOX/onceroot/tree/v0.2.0#install)
+  says from step 2. The widget calls only the `onceroot` command; it has no
+  other dependency.
 
 ## Install
 
@@ -64,7 +80,7 @@ card, and leaves the decision to Omarchy's dialog.
 omarchy plugin add https://github.com/TAIPANBOX/onceroot-omarchy.git --enable
 ```
 
-The onceroot package also carries this widget, in
+The onceroot package carries this widget too, from 0.2.0 on, in
 `/usr/share/onceroot/omarchy-plugin`:
 
 ```sh
