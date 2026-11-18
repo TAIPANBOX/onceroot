@@ -17,6 +17,40 @@ AI coding agent, one approved command at a time.
 - If oncerootd cannot be reached, the padlock shows a question mark.
 - English and Ukrainian.
 
+## Why it matters on Omarchy
+
+Omarchy is built around coding agents, and it starts them in modes that do not
+stop to ask. When such an agent needs root, Omarchy's answer today is
+passwordless sudo for a while, and its own manual is clear about what that
+means: while it is on, anything running as your user can do anything as root.
+A grant can also be extended from the same user without a new confirmation
+(discussion #14461). onceroot gives Omarchy a narrower answer that keeps the
+agent working:
+
+- **Root for one command, not for a while.** The agent asks for one exact
+  command; it runs once if you approve it, and the approval is bound to that
+  command, so there is no standing grant to extend or to borrow.
+- **You approve where Omarchy already asks you.** The request opens Omarchy's
+  own polkit dialog, with your fingerprint, security key or password. Nothing
+  new to learn, and nothing in Omarchy to change.
+- **What you approve is what you read.** The card names the program as root
+  resolves it, every argument, the folder and the chain of processes that
+  asked; characters that could fake an argument are escaped, and a card that
+  cannot be shown whole is refused rather than shown in part.
+- **Shells and interpreters are refused.** `bash -c`, `python -c` and their kind
+  never run through onceroot, because no card can show the code they would run.
+- **Fewer prompts, so passwordless sudo can stay off.** Read-only commands you
+  list run at once, still journalled; prompt fatigue is the usual reason people
+  turn passwordless sudo on.
+- **A record of what root did.** Every request, decision and run goes into a
+  signed, hash-chained journal, so an unattended agent's root work can be
+  checked afterwards.
+- **Away from the desk.** Optionally, a card can be approved from a phone with a
+  PIN and an authenticator code, for agents that keep working while you are out.
+
+This widget is the bar side of it: it shows what waits and lets you open each
+card, and leaves the decision to Omarchy's dialog.
+
 ## Requirements
 
 - Omarchy 4.5 or later.
