@@ -12,7 +12,7 @@
 ```sh
 git clone https://github.com/TAIPANBOX/onceroot && cd onceroot
 scripts/package.sh
-sudo pacman -U onceroot-0.1.0-1-*.pkg.tar.zst
+sudo pacman -U onceroot-0.2.0-1-*.pkg.tar.zst
 ```
 
 `scripts/package.sh` runs `makepkg` on [packaging/PKGBUILD](../packaging/PKGBUILD),
@@ -42,9 +42,9 @@ Each release carries the package, the binaries and `SHA256SUMS`, every file with
 a build provenance attestation from this repository's release workflow:
 
 ```sh
-gh release download v0.1.0 --repo TAIPANBOX/onceroot -p 'onceroot-*.pkg.tar.zst'
-gh attestation verify onceroot-0.1.0-1-x86_64.pkg.tar.zst --repo TAIPANBOX/onceroot
-sudo pacman -U onceroot-0.1.0-1-x86_64.pkg.tar.zst
+gh release download v0.2.0 --repo TAIPANBOX/onceroot -p 'onceroot-*.pkg.tar.zst'
+gh attestation verify onceroot-0.2.0-1-x86_64.pkg.tar.zst --repo TAIPANBOX/onceroot
+sudo pacman -U onceroot-0.2.0-1-x86_64.pkg.tar.zst
 ```
 
 Or build the released version yourself: `cd packaging && makepkg -si` fetches the

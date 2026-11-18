@@ -142,7 +142,7 @@ func dispatch(ctx context.Context, req rpcRequest, relay Relay) (any, *rpcError)
 		return map[string]any{
 			"protocolVersion": p.ProtocolVersion,
 			"capabilities":    map[string]any{"tools": map[string]any{}},
-			"serverInfo":      map[string]any{"name": "onceroot", "version": "0.1.0"},
+			"serverInfo":      map[string]any{"name": "onceroot", "version": "0.2.0"},
 		}, nil
 	case "ping":
 		return map[string]any{}, nil
