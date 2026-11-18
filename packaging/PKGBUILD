@@ -1,6 +1,6 @@
 # Maintainer: TAIPANBOX
 pkgname=onceroot
-pkgver=0.1.0
+pkgver=0.2.0
 pkgrel=1
 pkgdesc='Root for AI agents, one person-approved command at a time'
 arch=('x86_64' 'aarch64')
