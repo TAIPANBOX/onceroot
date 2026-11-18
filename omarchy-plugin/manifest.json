@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "taipanbox.onceroot",
+  "name": "onceroot",
+  "version": "0.2.0",
+  "author": "TAIPANBOX",
+  "description": "Root requests from AI agents in the bar: see each card, approve through Omarchy's own dialog, one command at a time",
+  "kinds": ["bar-widget"],
+  "entryPoints": { "barWidget": "BarWidget.qml" },
+  "barWidget": {
+    "displayName": "onceroot",
+    "description": "Waiting root requests from AI agents, with their cards",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
