@@ -53,13 +53,16 @@ func TestOmarchyPluginModel(t *testing.T) {
 	if len(tests) == 0 {
 		t.Fatal("no plugin model tests: measured nothing")
 	}
-	cmd := exec.Command(node, append([]string{"--test"}, tests...)...)
+	// TAP on purpose: node's default reporter depends on its version and on
+	// whether stdout is a terminal, and only TAP has a fixed summary to read.
+	cmd := exec.Command(node, append([]string{"--test", "--test-reporter=tap"}, tests...)...)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("plugin model tests failed: %v\n%s", err, out)
 	}
-	if !strings.Contains(string(out), "# fail 0") {
-		t.Fatalf("plugin model tests did not report 0 failures:\n%s", out)
+	s := string(out)
+	if !strings.Contains(s, "\n# fail 0\n") || strings.Contains(s, "\n# pass 0\n") || !strings.Contains(s, "\n# pass ") {
+		t.Fatalf("plugin model tests did not report passes and 0 failures:\n%s", out)
 	}
 }
 
