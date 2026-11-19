@@ -60,14 +60,19 @@ card, and leaves the decision to Omarchy's dialog.
   `52dd00e83e81`, with this checksum:
 
 ```sh
-gh release download v0.2.0 --repo TAIPANBOX/onceroot -p 'onceroot-0.2.0-1-x86_64.pkg.tar.zst'
+cd "$(mktemp -d)" &&
+gh release download v0.2.0 --repo TAIPANBOX/onceroot -p 'onceroot-0.2.0-1-x86_64.pkg.tar.zst' &&
 gh attestation verify onceroot-0.2.0-1-x86_64.pkg.tar.zst --repo TAIPANBOX/onceroot \
   --signer-workflow TAIPANBOX/onceroot/.github/workflows/release.yml \
   --source-ref refs/tags/v0.2.0 --source-digest 52dd00e83e81704c462532beaf1707570aae40e4 \
-  --deny-self-hosted-runners
-echo '8a3823088582065d1d5e6c8017424df0603204e7deab11f1ecc417cabfc73e05  onceroot-0.2.0-1-x86_64.pkg.tar.zst' | sha256sum -c -
-sudo pacman -U onceroot-0.2.0-1-x86_64.pkg.tar.zst
+  --deny-self-hosted-runners &&
+echo '8a3823088582065d1d5e6c8017424df0603204e7deab11f1ecc417cabfc73e05  onceroot-0.2.0-1-x86_64.pkg.tar.zst' | sha256sum -c - &&
+sudo pacman -U "./onceroot-0.2.0-1-x86_64.pkg.tar.zst"
 ```
+  The commands are one chain: if the download, the attestation or the checksum
+  fails, it stops before pacman runs, and a fresh folder means no earlier
+  download can stand in for this one.
+
 
   Then allow your user and start the service as
   [onceroot's README](https://github.com/TAIPANBOX/onceroot/tree/v0.2.0#install)

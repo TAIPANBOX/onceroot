@@ -19,3 +19,7 @@ Feature: The repository's own gates
     Or a tag that names no test
     Or no feature files at all
     Then the binding gate reports it
+
+  @test:TestInstallStepsStopBeforePacmanOnFailure
+  Scenario: a failed check stops the install before pacman runs
+    Then in every documented install block, each command before pacman -U chains into it with && or continues with a backslash, so a failed attestation or checksum never reaches pacman
