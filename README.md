@@ -92,21 +92,26 @@ workflow, built from the `v0.2.0` tag at commit `52dd00e83e81`, and match its
 checksum.
 
 ```sh
-gh release download v0.2.0 --repo TAIPANBOX/onceroot -p 'onceroot-0.2.0-1-x86_64.pkg.tar.zst'
+cd "$(mktemp -d)" &&
+gh release download v0.2.0 --repo TAIPANBOX/onceroot -p 'onceroot-0.2.0-1-x86_64.pkg.tar.zst' &&
 gh attestation verify onceroot-0.2.0-1-x86_64.pkg.tar.zst --repo TAIPANBOX/onceroot \
   --signer-workflow TAIPANBOX/onceroot/.github/workflows/release.yml \
   --source-ref refs/tags/v0.2.0 --source-digest 52dd00e83e81704c462532beaf1707570aae40e4 \
-  --deny-self-hosted-runners
-echo '8a3823088582065d1d5e6c8017424df0603204e7deab11f1ecc417cabfc73e05  onceroot-0.2.0-1-x86_64.pkg.tar.zst' | sha256sum -c -
-sudo pacman -U onceroot-0.2.0-1-x86_64.pkg.tar.zst
+  --deny-self-hosted-runners &&
+echo '8a3823088582065d1d5e6c8017424df0603204e7deab11f1ecc417cabfc73e05  onceroot-0.2.0-1-x86_64.pkg.tar.zst' | sha256sum -c - &&
+sudo pacman -U "./onceroot-0.2.0-1-x86_64.pkg.tar.zst"
 ```
+
+The commands are one chain: if the download, the attestation or the checksum
+fails, it stops before pacman runs, and a fresh folder means no earlier
+download can stand in for this one.
 
 Or build that same tag yourself; the build runs the whole test suite:
 
 ```sh
-git clone --branch v0.2.0 https://github.com/TAIPANBOX/onceroot && cd onceroot
-test "$(git rev-parse HEAD)" = 52dd00e83e81704c462532beaf1707570aae40e4
-scripts/package.sh
+git clone --branch v0.2.0 https://github.com/TAIPANBOX/onceroot && cd onceroot &&
+test "$(git rev-parse HEAD)" = 52dd00e83e81704c462532beaf1707570aae40e4 &&
+scripts/package.sh &&
 sudo pacman -U onceroot-0.2.0-1-*.pkg.tar.zst
 ```
 
